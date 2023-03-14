@@ -12,4 +12,5 @@ public class Post {
     private String image;
     private String desc;
     private LocalDateTime date;
+    private User user;
 }

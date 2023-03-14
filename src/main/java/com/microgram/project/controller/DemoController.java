@@ -1,34 +1,36 @@
 package com.microgram.project.controller;
 
-import com.microgram.project.service.DbService;
+import com.microgram.project.service.PrimitiveDbService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/")
+@RestController
+@RequestMapping("/demo")
 @RequiredArgsConstructor
-public class MainController {
-    private final DbService dbService;
+public class DemoController {
+    private final PrimitiveDbService primitiveDbService;
 
     @GetMapping("/connect")
     public ResponseEntity<String> getConnection() {
-        return new ResponseEntity<>(dbService.openConnection(), HttpStatus.OK);
+        return new ResponseEntity<>(primitiveDbService.openConnection(), HttpStatus.OK);
     }
 
     @GetMapping("/create")
     public ResponseEntity<String> createTable() {
-        return new ResponseEntity<>(dbService.shouldCreateTable(), HttpStatus.OK);
+        return new ResponseEntity<>(primitiveDbService.shouldCreateTable(), HttpStatus.OK);
     }
 
     @GetMapping("/select")
     public ResponseEntity<String> selectData() {
-        return new ResponseEntity<>(dbService.shouldSelectData(), HttpStatus.OK);
+        return new ResponseEntity<>(primitiveDbService.shouldSelectData(), HttpStatus.OK);
     }
 
     @GetMapping("/meta")
     public ResponseEntity<String> getMetaData() {
-        return new ResponseEntity<>(dbService.getMetaData(), HttpStatus.OK);
+        return new ResponseEntity<>(primitiveDbService.getMetaData(), HttpStatus.OK);
     }
 }

@@ -11,4 +11,5 @@ public class Comment {
     private Long id;
     private String text;
     private LocalDateTime date;
+    private Post post;
 }

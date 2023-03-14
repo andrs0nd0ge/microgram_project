@@ -19,12 +19,12 @@ public class UtilityClass {
                 "        unique,\n" +
                 "    name          varchar(60),\n" +
                 "    username      varchar(70) not null,\n" +
-                "    email         varchar(100)\n" +
+                "    email         varchar(100) not null\n" +
                 "        unique,\n" +
                 "    password      text        not null,\n" +
-                "    post_qty      int,\n" +
-                "    subs_qty      int,\n" +
-                "    followers_qty int\n" +
+                "    post_qty      int default 0,\n" +
+                "    subs_qty      int default 0,\n" +
+                "    followers_qty int default 0\n" +
                 ");";
         jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
@@ -91,16 +91,20 @@ public class UtilityClass {
                 "        primary key\n" +
                 "        unique,\n" +
                 "    text text,\n" +
-                "    date timestamp\n" +
+                "    date timestamp,\n" +
+                "    post_id int" +
+                "       constraint comments_post_fk" +
+                "           references public.posts(id)" +
+                "           on update cascade on delete cascade" +
                 ");";
         jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Comment.class));
     }
 
     public void insertIntoUsers() {
-        String sql = "INSERT INTO public.users (id, name, username, email, password, post_qty, subs_qty, followers_qty) " +
-                "VALUES (DEFAULT, 'Max', 'd0ge', 'and.d0ge@gmail.com', '123d0ge123', 0, 0, 0), " +
-                "(DEFAULT, 'Jenson', 'j90', 'j90@gmail.com', 'j90123', 0, 0, 0), " +
-                "(DEFAULT, 'Michael', '96mic', 'mic_96@gmail.com', 'mic9090', 0, 0, 0);";
+        String sql = "INSERT INTO public.users (name, username, email, password, post_qty, subs_qty, followers_qty) " +
+                "VALUES ('Max', 'd0ge', 'and.d0ge@gmail.com', '123d0ge123', 0, 0, 0), " +
+                "('Jenson', 'j90', 'j90@gmail.com', 'j90123', 0, 0, 0), " +
+                "('Michael', '96mic', 'mic_96@gmail.com', 'mic9090', 0, 0, 0);";
         jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
 
@@ -113,10 +117,10 @@ public class UtilityClass {
     }
 
     public void insertIntoPosts() {
-        String sql = "INSERT INTO public.posts (image, description, date) " +
-                "VALUES ('first test picture', 'some description', current_date)," +
-                "('second test picture', 'another description', current_date)," +
-                "('third test picture', 'some other description', current_date)";
+        String sql = "INSERT INTO public.posts (image, description, date, user_id) " +
+                "VALUES ('first test picture', 'some description', current_date, 3)," +
+                "('second test picture', 'another description', current_date, 2)," +
+                "('third test picture', 'some other description', current_date, 2)";
         jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class));
     }
 
@@ -129,10 +133,10 @@ public class UtilityClass {
     }
 
     public void insertIntoComments() {
-        String sql = "INSERT INTO public.comments (text, date) " +
-                "VALUES ('some text', current_date)," +
-                "('another text', current_date)," +
-                "('some other text', current_date)";
+        String sql = "INSERT INTO public.comments (text, date, post_id) " +
+                "VALUES ('some text', current_date, 2)," +
+                "('another text', current_date, 3)," +
+                "('some other text', current_date, 1)";
         jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Comment.class));
     }
 }

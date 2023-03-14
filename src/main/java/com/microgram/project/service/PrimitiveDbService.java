@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class DbService {
+public class PrimitiveDbService {
     private Connection conn;
 
-    public DbService() {
+    public PrimitiveDbService() {
         try {
             init();
         } catch (SQLException e) {

@@ -1,6 +1,5 @@
 package com.microgram.project.dao;
 
-import com.microgram.project.entity.Post;
 import com.microgram.project.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -36,7 +35,7 @@ public class UserDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
 
-    public boolean checkIfUserExists(String email) throws SQLException {
+    public Boolean checkIfUserExists(String email) throws SQLException {
         String sql = "select * from public.users where email = ?";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, email);
@@ -44,17 +43,5 @@ public class UserDao {
                 .findFirst()
                 .orElse(null);
         return user != null;
-    }
-
-    public List<Post> getAllPosts() {
-        String sql = "select * from public.posts";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class));
-    }
-
-    public List<Post> getPostOfUser(Long userId) throws SQLException {
-        String sql = "select * from public.posts where user_id = ?";
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setLong(1, userId);
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class));
     }
 }
