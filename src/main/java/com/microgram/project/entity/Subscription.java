@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class Subscription {
+    private Long id;
     private User subscriber;
     private User subscribedTo;
     private LocalDate date;
