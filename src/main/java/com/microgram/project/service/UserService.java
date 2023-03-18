@@ -58,4 +58,27 @@ public class UserService {
         }
         return "User was not found";
     }
+
+    public void registerUser(String name, String username, String email, String password) {
+        List<User> users = userDao.getAllUsers();
+        for (User user : users) {
+            if (user.getUsername().equals(username) || user.getEmail().equals(email)) {
+                System.out.println("User already exists");
+            } else {
+                userDao.registerUser(name, username, email, password);
+                System.out.println("User was registered successfully");
+            }
+            break;
+        }
+    }
+
+    public String loginUser(String email, String password) {
+        List<User> users = userDao.getAllUsers();
+        for (User user : users) {
+            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
+                return "Logged in successfully";
+            }
+        }
+        return "Login failed";
+    }
 }

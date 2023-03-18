@@ -19,4 +19,8 @@ public class SubscriptionService {
                 .map(SubscriptionDto::from)
                 .collect(Collectors.toList());
     }
+
+    public void subscribe(Long subscriberId, Long subscribedToId) {
+        subsDao.subscribe(subscriberId, subscribedToId);
+    }
 }

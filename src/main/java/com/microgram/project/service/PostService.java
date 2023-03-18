@@ -34,4 +34,24 @@ public class PostService {
                 .map(PostDto::from)
                 .collect(Collectors.toList());
     }
+
+    public void leaveCommentOnPost(Long postId, String comment) {
+        postDao.leaveCommentOnPost(postId, comment);
+    }
+
+    public void leaveLikeUnderPost(Long userId, Long postId) {
+        postDao.leaveLikeUnderPost(userId, postId);
+        System.out.println("Like was added successfully");
+    }
+
+    public void deleteCommentOnPost(Long userId, Long postId, Long commentId) {
+        postDao.deleteCommentOnPost(userId, postId, commentId);
+    }
+
+    public List<PostDto> getPostsOfOtherUsers(Long userId) {
+        List<Post> posts = postDao.getPostsOfOtherUsers(userId);
+        return posts.stream()
+                .map(PostDto::from)
+                .collect(Collectors.toList());
+    }
 }

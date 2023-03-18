@@ -49,4 +49,10 @@ public class UserDao {
                 .stream()
                 .findFirst();
     }
+
+    public void registerUser(String name, String username, String email, String password) {
+        String sql = String.format("insert into users (name, username, email, password) " +
+                "values ('%s', '%s', '%s', '%s')", name, username, email, password);
+        jdbcTemplate.update(sql);
+    }
 }

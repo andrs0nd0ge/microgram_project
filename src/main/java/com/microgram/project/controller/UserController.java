@@ -2,7 +2,6 @@ package com.microgram.project.controller;
 
 import com.microgram.project.dto.UserDto;
 import com.microgram.project.service.UserService;
-import com.microgram.project.util.UtilityClass;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import java.util.List;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UtilityClass util;
     private final UserService userService;
     @GetMapping
     public List<UserDto> getAllUsers() {
@@ -54,13 +52,13 @@ public class UserController {
         return new ResponseEntity<>(userService.findUserByUsername(username), HttpStatus.OK);
     }
 
-    @GetMapping("/create")
-    public ResponseEntity<String> createUsersTable() {
-        return new ResponseEntity<>(util.createUsersTable(), HttpStatus.OK);
+    @PostMapping("/register")
+    public void registerUser(@RequestParam String name, @RequestParam String username, @RequestParam String email, @RequestParam String password) {
+        userService.registerUser(name, username, email.toLowerCase().trim(), password);
     }
 
-    @GetMapping("/insert")
-    public ResponseEntity<String> insertIntoUsersTable() {
-        return new ResponseEntity<>(util.insertIntoUsers(), HttpStatus.OK);
+    @GetMapping("/login")
+    public String loginUser(@RequestParam String email, @RequestParam String password) {
+        return userService.loginUser(email, password);
     }
 }

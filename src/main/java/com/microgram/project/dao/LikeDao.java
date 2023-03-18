@@ -18,8 +18,8 @@ public class LikeDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Like.class));
     }
     public Optional<Like> checkPostForLikes(Long postId) {
-        String sql = String.format("select * from likes l " +
-                "left join posts p on p.id = l.post_id " +
+        String sql = String.format("select * from likes as l " +
+                "left join posts as p on p.id = l.post_id " +
                 "where post_id = %s;", postId);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Like.class))
                 .stream()
