@@ -31,18 +31,16 @@ public class UtilityClass {
     public String createSubscriptionsTable() {
         String sql = "create table if not exists subscriptions " +
                 "( " +
-                "    id               bigserial " +
-                "        primary key " +
-                "        unique, " +
-                "    subscriber_id    int " +
-                "        constraint subscriptions_subscriber_fk " +
-                "            references users " +
+                "    subscriber_id    bigint, " +
+                "    subscribed_to_id bigint, " +
+                "    date             date default current_date, " +
+                "    primary key (subscriber_id, subscribed_to_id), " +
+                "    foreign key (subscriber_id) " +
+                "        references users (id) " +
                 "            on update cascade on delete cascade, " +
-                "    subscribed_to_id int " +
-                "        constraint subscriptions_subscribed_to_fk " +
-                "            references users " +
-                "            on update cascade on delete cascade, " +
-                "    date             date " +
+                "    foreign key (subscribed_to_id) " +
+                "        references users (id) " +
+                "            on update cascade on delete cascade" +
                 ");";
         jdbcTemplate.update(sql);
         return "Everything went as it should've";
@@ -57,7 +55,7 @@ public class UtilityClass {
                 "    image       text, " +
                 "    description text, " +
                 "    date        timestamp, " +
-                "    user_id     int " +
+                "    user_id     bigint " +
                 "       constraint posts_user_fk " +
                 "           references users " +
                 "           on update cascade on delete cascade" +
@@ -69,18 +67,16 @@ public class UtilityClass {
     public String createLikesTable() {
         String sql = "create table if not exists likes " +
                 "( " +
-                "    id      bigserial " +
-                "        primary key " +
-                "        unique, " +
-                "    user_id int " +
-                "        constraint likes_user_fk " +
-                "            references users " +
-                "            on update cascade on delete cascade, " +
-                "    post_id int " +
-                "        constraint likes_post_fk " +
-                "            references posts (id) " +
-                "            on update cascade on delete cascade, " +
-                "    date    timestamp default current_timestamp" +
+                "    user_id    bigint, " +
+                "    post_id    bigint, " +
+                "    date       timestamp default current_timestamp, " +
+                "    primary key (user_id, post_id), " +
+                "    foreign key (user_id) " +
+                "        references users (id) " +
+                "        on update cascade on delete cascade, " +
+                "    foreign key (post_id) " +
+                "        references posts (id) " +
+                "        on update cascade on delete cascade " +
                 ");";
         jdbcTemplate.update(sql);
         return "Everything went as it should've";
@@ -90,11 +86,11 @@ public class UtilityClass {
         String sql = "create table if not exists comments " +
                 "( " +
                 "    id   bigserial " +
-                "        primary key " +
-                "        unique, " +
+                "         primary key " +
+                "         unique, " +
                 "    text text, " +
                 "    date timestamp, " +
-                "    post_id int" +
+                "    post_id bigint" +
                 "       constraint comments_post_fk" +
                 "           references posts(id)" +
                 "           on update cascade on delete cascade" +
@@ -113,11 +109,12 @@ public class UtilityClass {
     }
 
     public String insertIntoSubs() {
-        String sql = "INSERT INTO subscriptions (subscriber_id, subscribed_to_id, date) " +
-                "VALUES (1, 2, current_date), " +
-                "(2, 3, current_date), " +
-                "(3, 1, current_date)," +
-                "(1, 3, current_date);";
+        String sql = "INSERT INTO subscriptions (subscriber_id, subscribed_to_id) " +
+                "VALUES (1, 2), " +
+                "(2, 3), " +
+                "(3, 1)," +
+                "(1, 3)," +
+                "(3, 2);";
         jdbcTemplate.update(sql);
         return "Everything went as it should've";
     }
@@ -144,8 +141,67 @@ public class UtilityClass {
         String sql = "INSERT INTO comments (text, date, post_id) " +
                 "VALUES ('some text', current_timestamp, 2)," +
                 "('another text', current_timestamp, 3)," +
-                "('some other text', current_timestamp, 1)";
+                "('some other text', current_timestamp, 1)," +
+                "('text', current_timestamp, 2)";
         jdbcTemplate.update(sql);
+        return "Everything went as it should've";
+    }
+
+    public String updateUsers() {
+        String postsForDoge = "update users set post_qty = (select count(user_id) from users as u " +
+                "    left join posts p on u.id = p.user_id " +
+                "    where u.id = 1 " +
+                "    group by u.id) " +
+                "where id = 1;";
+        String postsForJ90 = "update users set post_qty = (select count(user_id) from users as u " +
+                "    left join posts p on u.id = p.user_id " +
+                "    where u.id = 2 " +
+                "    group by u.id) " +
+                "where id = 2;";
+        String postsFor96mic = "update users set post_qty = (select count(user_id) from users as u " +
+                "    left join posts p on u.id = p.user_id " +
+                "    where u.id = 3 " +
+                "    group by u.id) " +
+                "where id = 3;";
+        String subsForDoge = "update users set subs_qty = (select count(subscriber_id) from users as u " +
+                "    left join subscriptions s on u.id = s.subscriber_id " +
+                "    where u.id = 1 " +
+                "    group by u.id) " +
+                "where id = 1;";
+        String subsForJ90 = "update users set subs_qty = (select count(subscriber_id) from users as u " +
+                "    left join subscriptions s on u.id = s.subscriber_id " +
+                "    where u.id = 2 " +
+                "    group by u.id) " +
+                "where id = 2;";
+        String subsFor96mic = "update users set subs_qty = (select count(subscriber_id) from users as u " +
+                "    left join subscriptions s on u.id = s.subscriber_id " +
+                "    where u.id = 3 " +
+                "    group by u.id) " +
+                "where id = 3;";
+        String followersForDoge = "update users set followers_qty = (select count(subscribed_to_id) from users as u " +
+                "    left join subscriptions s on u.id = s.subscribed_to_id " +
+                "    where u.id = 1 " +
+                "    group by u.id) " +
+                "where id = 1;";
+        String followersForJ90 = "update users set followers_qty = (select count(subscribed_to_id) from users as u " +
+                "    left join subscriptions s on u.id = s.subscribed_to_id " +
+                "    where u.id = 2 " +
+                "    group by u.id) " +
+                "where id = 2;";
+        String followersFor96mic = "update users set followers_qty = (select count(subscribed_to_id) from users as u " +
+                "    left join subscriptions s on u.id = s.subscribed_to_id " +
+                "    where u.id = 3 " +
+                "    group by u.id) " +
+                "where id = 3;";
+        jdbcTemplate.update(postsForDoge);
+        jdbcTemplate.update(postsForJ90);
+        jdbcTemplate.update(postsFor96mic);
+        jdbcTemplate.update(subsForDoge);
+        jdbcTemplate.update(subsForJ90);
+        jdbcTemplate.update(subsFor96mic);
+        jdbcTemplate.update(followersForDoge);
+        jdbcTemplate.update(followersForJ90);
+        jdbcTemplate.update(followersFor96mic);
         return "Everything went as it should've";
     }
 }
