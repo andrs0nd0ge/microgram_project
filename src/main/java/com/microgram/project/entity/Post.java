@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class Post {
     private Long id;
     private String image;
-    private String desc;
+    private String description;
     private LocalDateTime date;
-    private User user;
+    private Long userId;
 }

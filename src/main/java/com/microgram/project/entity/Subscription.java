@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Setter
 public class Subscription {
     private Long id;
-    private User subscriber;
-    private User subscribedTo;
+    private Long subscriberId;
+    private Long subscribedToId;
     private LocalDate date;
 }
