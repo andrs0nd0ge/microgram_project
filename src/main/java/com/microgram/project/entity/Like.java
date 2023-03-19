@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 public class Like {
     private Long id;
-    private User user;
-    private Post post;
+    private Long userId;
+    private Long postId;
     private LocalDateTime date;
 }
