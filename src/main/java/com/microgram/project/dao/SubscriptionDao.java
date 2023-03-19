@@ -19,7 +19,8 @@ public class SubscriptionDao {
     }
 
     public void updateSubsQty(Long userId) {
-        String sql = String.format("update users set subs_qty = (select count(subscriber_id) from users as u " +
+        String sql = String.format("update users set subs_qty = " +
+                "(select count(subscriber_id) from users as u " +
                 "    left join subscriptions s on u.id = s.subscriber_id " +
                 "    where u.id = %s " +
                 "    group by u.id) " +
@@ -28,7 +29,8 @@ public class SubscriptionDao {
     }
 
     public void updateFollowersQty(Long userId) {
-        String sql = String.format("update users set followers_qty = (select count(subscribed_to_id) from users as u " +
+        String sql = String.format("update users set followers_qty = " +
+                "(select count(subscribed_to_id) from users as u " +
                 "    left join subscriptions s on u.id = s.subscribed_to_id " +
                 "    where u.id = %s " +
                 "    group by u.id) " +
@@ -39,6 +41,14 @@ public class SubscriptionDao {
     public void subscribe(Long subscriberId, Long subscribedToId) {
         String sql = String.format("insert into subscriptions(subscriber_id, subscribed_to_id, date) " +
                 "values (%s, %s, current_date)", subscriberId, subscribedToId);
+        jdbcTemplate.update(sql);
+        updateSubsQty(subscriberId);
+        updateFollowersQty(subscribedToId);
+    }
+
+    public void unsubscribe(Long subscriberId, Long subscribedToId) {
+        String sql = String.format("delete from subscriptions " +
+                "where subscriber_id = %s and subscribed_to_id = %s", subscriberId, subscribedToId);
         jdbcTemplate.update(sql);
         updateSubsQty(subscriberId);
         updateFollowersQty(subscribedToId);

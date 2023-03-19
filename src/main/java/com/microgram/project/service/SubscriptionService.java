@@ -23,4 +23,8 @@ public class SubscriptionService {
     public void subscribe(Long subscriberId, Long subscribedToId) {
         subsDao.subscribe(subscriberId, subscribedToId);
     }
+
+    public void unsubscribe(Long subscriberId, Long subscribedToId) {
+        subsDao.unsubscribe(subscriberId, subscribedToId);
+    }
 }

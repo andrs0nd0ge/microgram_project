@@ -47,6 +47,10 @@ public class PostController {
     public void leaveLikeUnderPost(@PathVariable Long userId, @PathVariable Long postId) {
         postService.leaveLikeUnderPost(userId, postId);
     }
+    @DeleteMapping("/unlike/{userId}/{postId}")
+    public void unlikePost(@PathVariable Long userId, @PathVariable Long postId) {
+        postService.unlikePost(userId, postId);
+    }
     @PostMapping("/post/{description}/{userId}")
     public void makePost(@RequestParam("file") MultipartFile file, @PathVariable String description, @PathVariable Long userId) {
         postService.makePost(file, description, userId);

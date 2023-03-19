@@ -87,15 +87,22 @@ public class PostDao {
     }
 
     public void deletePost(Long userId, Long postId) {
-        String post = String.format("delete from posts where user_id = %s and id = %s", userId, postId);
+        String post = String.format("delete from posts " +
+                "where user_id = %s and id = %s", userId, postId);
         jdbcTemplate.update(post);
         updatePostsQty(userId);
     }
 
-    public Post getPictureOfPost(Long postId) {
+    public Post getPostWithPicture(Long postId) {
         String sql = String.format("select image from posts where id = %s", postId);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class)).stream()
                 .findFirst()
                 .orElse(null);
+    }
+
+    public void unlikePost(Long userId, Long postId) {
+        String sql = String.format("delete from likes " +
+                "where user_id = %s and post_id = %s", userId, postId);
+        jdbcTemplate.update(sql);
     }
 }

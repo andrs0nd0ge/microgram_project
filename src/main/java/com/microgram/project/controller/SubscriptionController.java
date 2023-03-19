@@ -22,5 +22,10 @@ public class SubscriptionController {
     public void subscribe(@PathVariable Long subscriberId, @PathVariable Long followedId) {
         subService.subscribe(subscriberId, followedId);
     }
+
+    @DeleteMapping("/unsub/{subscriberId}/{followedId}")
+    public void unsubscribe(@PathVariable Long subscriberId, @PathVariable Long followedId) {
+        subService.unsubscribe(subscriberId, followedId);
+    }
 }
 

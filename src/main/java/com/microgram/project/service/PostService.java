@@ -72,11 +72,15 @@ public class PostService {
     }
 
     public Resource getPictureOfPost(Long postId) {
-        Post post = postDao.getPictureOfPost(postId);
+        Post post = postDao.getPostWithPicture(postId);
         if (post != null) {
             return new ByteArrayResource(post.getImage());
         } else {
             return null;
         }
+    }
+
+    public void unlikePost(Long userId, Long postId) {
+        postDao.unlikePost(userId, postId);
     }
 }
