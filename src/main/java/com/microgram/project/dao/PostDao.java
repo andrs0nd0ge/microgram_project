@@ -34,6 +34,15 @@ public class PostDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class));
     }
 
+    public void updatePostsQty(Long userId) {
+        String sql = String.format("update users set post_qty = (select count(user_id) from users as u " +
+                "    left join posts p on u.id = p.user_id " +
+                "    where u.id = %s " +
+                "    group by u.id) " +
+                "where id = %s;", userId, userId);
+        jdbcTemplate.update(sql);
+    }
+
     public List<Post> getPostsOfOtherUsers(Long userId) {
         String sql = String.format("select * from posts " +
                 "where user_id != %s", userId);
@@ -74,11 +83,13 @@ public class PostDao {
             statement.setLong(4, userId);
             return statement;
         });
+        updatePostsQty(userId);
     }
 
     public void deletePost(Long userId, Long postId) {
         String post = String.format("delete from posts where user_id = %s and id = %s", userId, postId);
         jdbcTemplate.update(post);
+        updatePostsQty(userId);
     }
 
     public Post getPictureOfPost(Long postId) {
