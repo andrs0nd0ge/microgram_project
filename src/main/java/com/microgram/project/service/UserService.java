@@ -72,13 +72,13 @@ public class UserService {
         }
     }
 
-    public String loginUser(String email, String password) {
+    public UserDto loginUser(String email, String password) {
         List<User> users = userDao.getAllUsers();
         for (User user : users) {
             if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                return "Logged in successfully";
+                return UserDto.from(user);
             }
         }
-        return "Login failed";
+        return null;
     }
 }

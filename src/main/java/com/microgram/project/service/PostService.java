@@ -4,8 +4,12 @@ import com.microgram.project.dao.PostDao;
 import com.microgram.project.dto.PostDto;
 import com.microgram.project.entity.Post;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +39,13 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    public List<PostDto> getPostsOfOtherUsers(Long userId) {
+        List<Post> posts = postDao.getPostsOfOtherUsers(userId);
+        return posts.stream()
+                .map(PostDto::from)
+                .collect(Collectors.toList());
+    }
+
     public void leaveCommentOnPost(Long postId, String comment) {
         postDao.leaveCommentOnPost(postId, comment);
     }
@@ -48,10 +59,16 @@ public class PostService {
         postDao.deleteCommentOnPost(userId, postId, commentId);
     }
 
-    public List<PostDto> getPostsOfOtherUsers(Long userId) {
-        List<Post> posts = postDao.getPostsOfOtherUsers(userId);
-        return posts.stream()
-                .map(PostDto::from)
-                .collect(Collectors.toList());
+    public void makePost(MultipartFile file, String description, Long userId) {
+        try {
+            postDao.makePost(file, description, userId);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Resource getPictureOfPost(Long postId) {
+        Post post = postDao.getPictureOfPost(postId);
+        return new ByteArrayResource(post.getImage());
     }
 }

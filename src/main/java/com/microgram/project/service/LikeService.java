@@ -20,4 +20,13 @@ public class LikeService {
                 .map(LikeDto::from)
                 .collect(Collectors.toList());
     }
+
+    public String checkPostForLikes(Long postId) {
+        Like like = likeDao.checkPostForLikes(postId);
+        if (like != null) {
+            return "Given post has at least one like";
+        } else {
+            return "Given post doesn't have any likes";
+        }
+    }
 }

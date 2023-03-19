@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Component
@@ -55,5 +58,25 @@ public class PostDao {
         String sql = String.format("insert into likes (user_id, post_id, date) " +
                 "values (%s, %s, current_timestamp);", userId, postId);
         jdbcTemplate.update(sql);
+    }
+
+    public void makePost(MultipartFile file, String description, Long userId) throws IOException {
+        byte[] image = file.getBytes();
+        String sql = "insert into posts (image, description, date, user_id) " +
+                "values (?, ?, current_timestamp, ?)";
+        jdbcTemplate.update(con -> {
+            PreparedStatement statement = con.prepareStatement(sql);
+            statement.setBytes(1, image);
+            statement.setString(2, description);
+            statement.setLong(3, userId);
+            return statement;
+        });
+    }
+
+    public Post getPictureOfPost(Long postId) {
+        String sql = String.format("select image from posts where id = %s", postId);
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class)).stream()
+                .findFirst()
+                .orElse(null);
     }
 }

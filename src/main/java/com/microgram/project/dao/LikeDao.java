@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -17,12 +16,13 @@ public class LikeDao {
         String sql = "select * from likes";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Like.class));
     }
-    public Optional<Like> checkPostForLikes(Long postId) {
+    public Like checkPostForLikes(Long postId) {
         String sql = String.format("select * from likes as l " +
                 "left join posts as p on p.id = l.post_id " +
                 "where post_id = %s;", postId);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Like.class))
                 .stream()
-                .findAny();
+                .findAny()
+                .orElse(null);
     }
 }

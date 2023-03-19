@@ -16,14 +16,11 @@ import java.time.LocalDateTime;
 public class LikeDto {
     public static LikeDto from(Like like) {
         return builder()
-                .id(like.getId())
                 .userId(like.getUserId())
                 .postId(like.getPostId())
                 .date(like.getDate())
                 .build();
     }
-
-    private Long id;
     @JsonProperty("user_id")
     private Long userId;
     @JsonProperty("post_id")

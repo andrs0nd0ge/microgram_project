@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,15 +16,14 @@ import lombok.NoArgsConstructor;
 public class SubscriptionDto {
     public static SubscriptionDto from(Subscription sub) {
         return builder()
-                .id(sub.getId())
                 .subscriberId(sub.getSubscriberId())
                 .subscribedToId(sub.getSubscribedToId())
+                .date(sub.getDate())
                 .build();
     }
-
-    public Long id;
     @JsonProperty("subscriber_id")
     public Long subscriberId;
     @JsonProperty("subscribed_to_id")
     public Long subscribedToId;
+    public LocalDate date;
 }

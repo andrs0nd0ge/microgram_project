@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 public class Post {
     private Long id;
-    private String image;
+    private byte[] image;
     private String description;
     private LocalDateTime date;
     private Long userId;

@@ -58,7 +58,11 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String loginUser(@RequestParam String email, @RequestParam String password) {
-        return userService.loginUser(email, password);
+    public ResponseEntity<UserDto> loginUser(@RequestParam String email, @RequestParam String password) {
+        UserDto user = userService.loginUser(email, password);
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 }
