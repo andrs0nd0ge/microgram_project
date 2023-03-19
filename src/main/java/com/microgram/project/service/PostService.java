@@ -32,7 +32,7 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public List<PostDto> getPostsOfFollowedUser(Long userId) {
+    public List<PostDto> getPostsOfFollowedUsers(Long userId) {
         List<Post> posts = postDao.getPostsOfFollowedUsers(userId);
         return posts.stream()
                 .map(PostDto::from)

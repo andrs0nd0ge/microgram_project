@@ -32,8 +32,8 @@ public class PostController {
         return postService.getPostsOfOtherUsers(userId);
     }
     @GetMapping("/feed/{userId}")
-    public List<PostDto> getPostsOfFollowedUser(@PathVariable Long userId) {
-        return postService.getPostsOfFollowedUser(userId);
+    public List<PostDto> getPostsOfFollowedUsers(@PathVariable Long userId) {
+        return postService.getPostsOfFollowedUsers(userId);
     }
     @PostMapping("/comment/{postId}/{comment}")
     public void leaveCommentOnPost(@PathVariable Long postId, @PathVariable String comment) {
