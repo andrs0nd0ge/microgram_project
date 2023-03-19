@@ -1,6 +1,7 @@
 package com.microgram.project.dao;
 
 import com.microgram.project.entity.Post;
+import com.microgram.project.util.FileServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -61,16 +62,23 @@ public class PostDao {
     }
 
     public void makePost(MultipartFile file, String description, Long userId) throws IOException {
+        String fileRoot = FileServiceImpl.root + "\\" + file.getOriginalFilename();
         byte[] image = file.getBytes();
-        String sql = "insert into posts (image, description, date, user_id) " +
-                "values (?, ?, current_timestamp, ?)";
+        String sql = "insert into posts (image, image_path, description, date, user_id) " +
+                "values (?, ?, ?, current_timestamp, ?)";
         jdbcTemplate.update(con -> {
             PreparedStatement statement = con.prepareStatement(sql);
             statement.setBytes(1, image);
-            statement.setString(2, description);
-            statement.setLong(3, userId);
+            statement.setString(2, fileRoot);
+            statement.setString(3, description);
+            statement.setLong(4, userId);
             return statement;
         });
+    }
+
+    public void deletePost(Long userId, Long postId) {
+        String post = String.format("delete from posts where user_id = %s and id = %s", userId, postId);
+        jdbcTemplate.update(post);
     }
 
     public Post getPictureOfPost(Long postId) {

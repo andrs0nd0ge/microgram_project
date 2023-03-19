@@ -17,7 +17,7 @@ public class PostDto {
     public static PostDto from(Post post) {
         return builder()
                 .id(post.getId())
-                .image(post.getImage())
+                .imagePath(post.getImagePath())
                 .desc(post.getDescription())
                 .date(post.getDate())
                 .userId(post.getUserId())
@@ -25,7 +25,8 @@ public class PostDto {
     }
 
     private Long id;
-    private byte[] image;
+    @JsonProperty("image_path")
+    private String imagePath;
     private String desc;
     private LocalDateTime date;
     @JsonProperty("user_id")

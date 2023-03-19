@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Service
 public class FileServiceImpl implements FileService {
-    private final Path root = Paths.get("src/main/resources/static/images");
+    public final static Path root = Paths.get("src/main/resources/static/images");
     @Override
     public void init() {
         try {
@@ -29,7 +29,6 @@ public class FileServiceImpl implements FileService {
         try {
             File convertFile = new File(root.toFile(), Objects.requireNonNull(file.getOriginalFilename()));
             if (!convertFile.exists()) {
-                convertFile.createNewFile();
                 FileOutputStream fileOutputStream = new FileOutputStream(convertFile);
                 fileOutputStream.write(file.getBytes());
                 fileOutputStream.close();

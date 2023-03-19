@@ -16,7 +16,8 @@ public class UtilityClass {
                 "        primary key " +
                 "        unique, " +
                 "    name          varchar(60), " +
-                "    username      varchar(70) not null, " +
+                "    username      varchar(70) not null " +
+                "        unique, " +
                 "    email         varchar(100) not null " +
                 "        unique, " +
                 "    password      text        not null, " +
@@ -52,7 +53,8 @@ public class UtilityClass {
                 "    id          bigserial " +
                 "        primary key " +
                 "        unique, " +
-                "    image       text, " +
+                "    image       bytea," +
+                "    image_path  text, " +
                 "    description text, " +
                 "    date        timestamp, " +
                 "    user_id     bigint " +
@@ -120,10 +122,10 @@ public class UtilityClass {
     }
 
     public String insertIntoPosts() {
-        String sql = "INSERT INTO posts (image, description, date, user_id) " +
-                "VALUES ('first test picture', 'some description', current_timestamp, 3)," +
-                "('second test picture', 'another description', current_timestamp, 2)," +
-                "('third test picture', 'some other description', current_timestamp, 2)";
+        String sql = "INSERT INTO posts (image, image_path, description, date, user_id) " +
+                "VALUES ('first test picture', 'first test picture path', 'some description', current_timestamp, 3)," +
+                "('second test picture', 'second test picture path', 'another description', current_timestamp, 2)," +
+                "('third test picture', 'third test picture path', 'some other description', current_timestamp, 2)";
         jdbcTemplate.update(sql);
         return "Everything went as it should've";
     }

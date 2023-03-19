@@ -67,8 +67,16 @@ public class PostService {
         }
     }
 
+    public void deletePost(Long userId, Long postId) {
+        postDao.deletePost(userId, postId);
+    }
+
     public Resource getPictureOfPost(Long postId) {
         Post post = postDao.getPictureOfPost(postId);
-        return new ByteArrayResource(post.getImage());
+        if (post != null) {
+            return new ByteArrayResource(post.getImage());
+        } else {
+            return null;
+        }
     }
 }

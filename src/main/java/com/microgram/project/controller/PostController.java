@@ -52,12 +52,20 @@ public class PostController {
         postService.makePost(file, description, userId);
         fileService.save(file);
     }
+    @DeleteMapping("/post/{userId}/{postId}")
+    public void deletePost(@PathVariable Long userId, @PathVariable Long postId) {
+        postService.deletePost(userId, postId);
+    }
     @GetMapping("/image/{postId}")
     public ResponseEntity<Resource> getPictureOfPost(@PathVariable Long postId) {
         Resource resource = postService.getPictureOfPost(postId);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
-                .body(resource);
+        if (resource != null) {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
+                    .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
