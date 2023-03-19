@@ -37,12 +37,4 @@ public class FileServiceImpl implements FileService {
             e.printStackTrace();
         }
     }
-    @Override
-    public void delete(MultipartFile file) {
-        try {
-            Files.delete(Path.of(root + file.getOriginalFilename()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
