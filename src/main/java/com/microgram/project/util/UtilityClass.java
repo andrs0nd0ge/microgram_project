@@ -1,13 +1,18 @@
 package com.microgram.project.util;
 
+import com.microgram.project.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.sql.PreparedStatement;
 
 @Component
 @AllArgsConstructor
 public class UtilityClass {
     private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
 
     public String createUsersTable() {
         String sql = "create table if not exists users " +
@@ -100,13 +105,24 @@ public class UtilityClass {
         jdbcTemplate.update(sql);
         return "Everything went as it should've";
     }
-
     public String insertIntoUsers() {
+        User max = new User();
+        max.setPassword(passwordEncoder.encode("123d0ge123"));
+        User jenson = new User();
+        jenson.setPassword(passwordEncoder.encode("j90123"));
+        User michael = new User();
+        michael.setPassword(passwordEncoder.encode("mic9090"));
         String sql = "INSERT INTO users (name, username, email, password, post_qty, subs_qty, followers_qty) " +
-                "VALUES ('Max', 'd0ge', 'and.d0ge@gmail.com', '123d0ge123', 0, 0, 0), " +
-                "('Jenson', 'j90', 'j90@gmail.com', 'j90123', 0, 0, 0), " +
-                "('Michael', '96mic', 'mic_96@gmail.com', 'mic9090', 0, 0, 0);";
-        jdbcTemplate.update(sql);
+                "VALUES ('Max', 'd0ge', 'and.d0ge@gmail.com', ?, 0, 0, 0), " +
+                "('Jenson', 'j90', 'j90@gmail.com', ?, 0, 0, 0), " +
+                "('Michael', '96mic', 'mic_96@gmail.com', ?, 0, 0, 0);";
+        jdbcTemplate.update(con -> {
+            PreparedStatement statement = con.prepareStatement(sql);
+            statement.setString(1, max.getPassword());
+            statement.setString(2, jenson.getPassword());
+            statement.setString(3, michael.getPassword());
+            return statement;
+        });
         return "Everything went as it should've";
     }
 
