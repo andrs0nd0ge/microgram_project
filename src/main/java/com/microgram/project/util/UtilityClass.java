@@ -1,15 +1,20 @@
 package com.microgram.project.util;
 
+import com.microgram.project.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.sql.PreparedStatement;
 
 @Component
 @AllArgsConstructor
 public class UtilityClass {
     private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
 
-    public String createUsersTable() {
+    public void createUsersTable() {
         String sql = "create table if not exists users " +
                 "( " +
                 "    id            bigserial " +
@@ -26,10 +31,9 @@ public class UtilityClass {
                 "    followers_qty int default 0 " +
                 ");";
         jdbcTemplate.update(sql);
-        return "Everything went as it should've";
     }
 
-    public String createSubscriptionsTable() {
+    public void createSubscriptionsTable() {
         String sql = "create table if not exists subscriptions " +
                 "( " +
                 "    subscriber_id    bigint, " +
@@ -44,10 +48,9 @@ public class UtilityClass {
                 "            on update cascade on delete cascade" +
                 ");";
         jdbcTemplate.update(sql);
-        return "Everything went as it should've";
     }
 
-    public String createPostsTable() {
+    public void createPostsTable() {
         String sql = "create table if not exists posts " +
                 "( " +
                 "    id          bigserial " +
@@ -63,10 +66,9 @@ public class UtilityClass {
                 "           on update cascade on delete cascade" +
                 ");";
         jdbcTemplate.update(sql);
-        return "Everything went as it should've";
     }
 
-    public String createLikesTable() {
+    public void createLikesTable() {
         String sql = "create table if not exists likes " +
                 "( " +
                 "    user_id    bigint, " +
@@ -81,10 +83,9 @@ public class UtilityClass {
                 "        on update cascade on delete cascade " +
                 ");";
         jdbcTemplate.update(sql);
-        return "Everything went as it should've";
     }
 
-    public String createCommentsTable() {
+    public void createCommentsTable() {
         String sql = "create table if not exists comments " +
                 "( " +
                 "    id   bigserial " +
@@ -98,19 +99,28 @@ public class UtilityClass {
                 "           on update cascade on delete cascade" +
                 ");";
         jdbcTemplate.update(sql);
-        return "Everything went as it should've";
     }
-
-    public String insertIntoUsers() {
+    public void insertIntoUsers() {
+        User first = new User();
+        first.setPassword(passwordEncoder.encode("123"));
+        User second = new User();
+        second.setPassword(passwordEncoder.encode("123"));
+        User third = new User();
+        third.setPassword(passwordEncoder.encode("123"));
         String sql = "INSERT INTO users (name, username, email, password, post_qty, subs_qty, followers_qty) " +
-                "VALUES ('Max', 'd0ge', 'and.d0ge@gmail.com', '123d0ge123', 0, 0, 0), " +
-                "('Jenson', 'j90', 'j90@gmail.com', 'j90123', 0, 0, 0), " +
-                "('Michael', '96mic', 'mic_96@gmail.com', 'mic9090', 0, 0, 0);";
-        jdbcTemplate.update(sql);
-        return "Everything went as it should've";
+                "VALUES ('First', '1', 'onetest@test', ?, 0, 0, 0), " +
+                "('Second', '2', 'twotest@test', ?, 0, 0, 0), " +
+                "('Third', '3', 'threetest@test', ?, 0, 0, 0);";
+        jdbcTemplate.update(con -> {
+            PreparedStatement statement = con.prepareStatement(sql);
+            statement.setString(1, first.getPassword());
+            statement.setString(2, second.getPassword());
+            statement.setString(3, third.getPassword());
+            return statement;
+        });
     }
 
-    public String insertIntoSubs() {
+    public void insertIntoSubs() {
         String sql = "INSERT INTO subscriptions (subscriber_id, subscribed_to_id) " +
                 "VALUES (1, 2), " +
                 "(2, 3), " +
@@ -118,92 +128,87 @@ public class UtilityClass {
                 "(1, 3)," +
                 "(3, 2);";
         jdbcTemplate.update(sql);
-        return "Everything went as it should've";
     }
 
-    public String insertIntoPosts() {
+    public void insertIntoPosts() {
         String sql = "INSERT INTO posts (image, image_path, description, date, user_id) " +
                 "VALUES ('first test picture', 'first test picture path', 'some description', current_timestamp, 3)," +
                 "('second test picture', 'second test picture path', 'another description', current_timestamp, 2)," +
                 "('third test picture', 'third test picture path', 'some other description', current_timestamp, 2)";
         jdbcTemplate.update(sql);
-        return "Everything went as it should've";
     }
 
-    public String insertIntoLikes() {
+    public void insertIntoLikes() {
         String sql = "INSERT INTO likes (user_id, post_id) " +
                 "VALUES (1, 1)," +
                 "(3, 1)," +
                 "(2, 2)";
         jdbcTemplate.update(sql);
-        return "Everything went as it should've";
     }
 
-    public String insertIntoComments() {
+    public void insertIntoComments() {
         String sql = "INSERT INTO comments (text, date, post_id) " +
                 "VALUES ('some text', current_timestamp, 2)," +
                 "('another text', current_timestamp, 3)," +
                 "('some other text', current_timestamp, 1)," +
                 "('text', current_timestamp, 2)";
         jdbcTemplate.update(sql);
-        return "Everything went as it should've";
     }
 
-    public String updateUsers() {
-        String postsForDoge = "update users set post_qty = (select count(user_id) from users as u " +
+    public void updateUsers() {
+        String postsForFirst = "update users set post_qty = (select count(user_id) from users as u " +
                 "    left join posts p on u.id = p.user_id " +
                 "    where u.id = 1 " +
                 "    group by u.id) " +
                 "where id = 1;";
-        String postsForJ90 = "update users set post_qty = (select count(user_id) from users as u " +
+        String postsForSecond = "update users set post_qty = (select count(user_id) from users as u " +
                 "    left join posts p on u.id = p.user_id " +
                 "    where u.id = 2 " +
                 "    group by u.id) " +
                 "where id = 2;";
-        String postsFor96mic = "update users set post_qty = (select count(user_id) from users as u " +
+        String postsForThird = "update users set post_qty = (select count(user_id) from users as u " +
                 "    left join posts p on u.id = p.user_id " +
                 "    where u.id = 3 " +
                 "    group by u.id) " +
                 "where id = 3;";
-        String subsForDoge = "update users set subs_qty = (select count(subscriber_id) from users as u " +
+        String subsForFirst = "update users set subs_qty = (select count(subscriber_id) from users as u " +
                 "    left join subscriptions s on u.id = s.subscriber_id " +
                 "    where u.id = 1 " +
                 "    group by u.id) " +
                 "where id = 1;";
-        String subsForJ90 = "update users set subs_qty = (select count(subscriber_id) from users as u " +
+        String subsForSecond = "update users set subs_qty = (select count(subscriber_id) from users as u " +
                 "    left join subscriptions s on u.id = s.subscriber_id " +
                 "    where u.id = 2 " +
                 "    group by u.id) " +
                 "where id = 2;";
-        String subsFor96mic = "update users set subs_qty = (select count(subscriber_id) from users as u " +
+        String subsForThird = "update users set subs_qty = (select count(subscriber_id) from users as u " +
                 "    left join subscriptions s on u.id = s.subscriber_id " +
                 "    where u.id = 3 " +
                 "    group by u.id) " +
                 "where id = 3;";
-        String followersForDoge = "update users set followers_qty = (select count(subscribed_to_id) from users as u " +
+        String followersForFirst = "update users set followers_qty = (select count(subscribed_to_id) from users as u " +
                 "    left join subscriptions s on u.id = s.subscribed_to_id " +
                 "    where u.id = 1 " +
                 "    group by u.id) " +
                 "where id = 1;";
-        String followersForJ90 = "update users set followers_qty = (select count(subscribed_to_id) from users as u " +
+        String followersForSecond = "update users set followers_qty = (select count(subscribed_to_id) from users as u " +
                 "    left join subscriptions s on u.id = s.subscribed_to_id " +
                 "    where u.id = 2 " +
                 "    group by u.id) " +
                 "where id = 2;";
-        String followersFor96mic = "update users set followers_qty = (select count(subscribed_to_id) from users as u " +
+        String followersForThird = "update users set followers_qty = (select count(subscribed_to_id) from users as u " +
                 "    left join subscriptions s on u.id = s.subscribed_to_id " +
                 "    where u.id = 3 " +
                 "    group by u.id) " +
                 "where id = 3;";
-        jdbcTemplate.update(postsForDoge);
-        jdbcTemplate.update(postsForJ90);
-        jdbcTemplate.update(postsFor96mic);
-        jdbcTemplate.update(subsForDoge);
-        jdbcTemplate.update(subsForJ90);
-        jdbcTemplate.update(subsFor96mic);
-        jdbcTemplate.update(followersForDoge);
-        jdbcTemplate.update(followersForJ90);
-        jdbcTemplate.update(followersFor96mic);
-        return "Everything went as it should've";
+        jdbcTemplate.update(postsForFirst);
+        jdbcTemplate.update(postsForSecond);
+        jdbcTemplate.update(postsForThird);
+        jdbcTemplate.update(subsForFirst);
+        jdbcTemplate.update(subsForSecond);
+        jdbcTemplate.update(subsForThird);
+        jdbcTemplate.update(followersForFirst);
+        jdbcTemplate.update(followersForSecond);
+        jdbcTemplate.update(followersForThird);
     }
 }
