@@ -18,33 +18,33 @@ public class UserDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
     public Optional<User> getUserByUsername(String username) {
-        String sql = String.format("select * from users where username like '%%%s%%'", username);
+        String sql = String.format("select * from users where username like lower('%%%s%%')", username);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class))
                 .stream()
                 .findFirst();
     }
 
     public List<User> getUsersByName(String name) {
-        String sql = String.format("select * from users where name like '%%%s%%'", name);
+        String sql = String.format("select * from users where name like lower('%%%s%%')", name);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
 
     public Optional<User> getUserByEmail(String email) {
-        String sql = String.format("select * from users where email like '%%%s%%'", email);
+        String sql = String.format("select * from users where email like lower('%%%s%%')", email);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class))
                 .stream()
                 .findFirst();
     }
 
     public Optional<User> checkIfUserExistsByEmail(String email) {
-        String sql = String.format("select * from users where email like '%%%s%%'", email);
+        String sql = String.format("select * from users where email like lower('%%%s%%')", email);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class))
                 .stream()
                 .findFirst();
     }
 
     public Optional<User> checkIfUserExistsByUsername(String username) {
-        String sql = String.format("select * from users where username like '%%%s%%'", username);
+        String sql = String.format("select * from users where username like lower('%%%s%%')", username);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class))
                 .stream()
                 .findFirst();
