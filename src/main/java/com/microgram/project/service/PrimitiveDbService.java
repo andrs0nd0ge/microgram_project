@@ -19,7 +19,7 @@ public class PrimitiveDbService {
     }
 
     private Connection getNewConnection() throws SQLException {
-        String url = "jdbc:postgresql://localhost:5432/microgram?user=postgres&password=123maks";
+        String url = "jdbc:postgresql://localhost:5432/microgram?user=postgres&password=qwerty";
         return DriverManager.getConnection(url);
     }
 
