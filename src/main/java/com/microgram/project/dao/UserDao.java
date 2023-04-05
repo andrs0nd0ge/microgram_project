@@ -24,7 +24,7 @@ public class UserDao {
                 .findFirst();
     }
     public Optional<User> getUserForAuthentication(String username) {
-        String sql = String.format("select * from users where username = %s)", username);
+        String sql = String.format("select * from users where username = '%s'", username);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class))
                 .stream()
                 .findFirst();

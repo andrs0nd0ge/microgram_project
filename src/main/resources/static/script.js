@@ -95,3 +95,29 @@ function likePost(posts, postId) {
 const leaveLike = likePost(posts,4);
 
 console.log(leaveLike);
+
+function hideSplashScreen() {
+    const splashScreen = document.getElementById('splash');
+    splashScreen.classList.add('d-none');
+    const showSplash = document.getElementById('showSplash');
+    showSplash.classList.remove('d-none');
+}
+
+function showSplashScreen() {
+    const splashScreen = document.getElementById('splash');
+    if (splashScreen.classList.contains('d-none')) {
+        splashScreen.classList.remove('d-none');
+    }
+}
+
+createCommentElement(comment);
+
+function createCommentElement(comment) {
+    const commentSection = document.getElementById('commentSection');
+    commentSection.classList.add('container', 'text-center', 'mt-5');
+    commentSection.innerHTML = `<p>Comment:</p>
+        <textarea rows="5" cols="40" placeholder="${comment.text}"></textarea>
+        <p>${comment.date}</p>
+        <p>Posted by: ${comment.post.user.username}</p>
+    `;
+}

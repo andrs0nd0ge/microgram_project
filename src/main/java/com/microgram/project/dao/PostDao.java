@@ -71,7 +71,7 @@ public class PostDao {
     }
 
     public void makePost(MultipartFile file, String description, Long userId) throws IOException {
-        String fileRoot = FileServiceImpl.root + "\\" + file.getOriginalFilename();
+        String fileRoot = "../static/images/" + file.getOriginalFilename();
         byte[] image = file.getBytes();
         String sql = "insert into posts (image, image_path, description, date, user_id) " +
                 "values (?, ?, ?, current_timestamp, ?)";
