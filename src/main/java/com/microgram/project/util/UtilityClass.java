@@ -108,9 +108,9 @@ public class UtilityClass {
         User third = new User();
         third.setPassword(passwordEncoder.encode("123"));
         String sql = "INSERT INTO users (name, username, email, password, post_qty, subs_qty, followers_qty) " +
-                "VALUES ('First', '1', 'onetest@test', ?, 0, 0, 0), " +
-                "('Second', '2', 'twotest@test', ?, 0, 0, 0), " +
-                "('Third', '3', 'threetest@test', ?, 0, 0, 0);";
+                "VALUES ('First', 'first', 'onetest@test', ?, 0, 0, 0), " +
+                "('Second', 'second', 'twotest@test', ?, 0, 0, 0), " +
+                "('Third', 'third', 'threetest@test', ?, 0, 0, 0);";
         jdbcTemplate.update(con -> {
             PreparedStatement statement = con.prepareStatement(sql);
             statement.setString(1, first.getPassword());
@@ -131,10 +131,10 @@ public class UtilityClass {
     }
 
     public void insertIntoPosts() {
-        String sql = "INSERT INTO posts (image, image_path, description, date, user_id) " +
-                "VALUES ('first test picture', 'first test picture path', 'some description', current_timestamp, 3)," +
-                "('second test picture', 'second test picture path', 'another description', current_timestamp, 2)," +
-                "('third test picture', 'third test picture path', 'some other description', current_timestamp, 2)";
+        String sql = "INSERT INTO posts (image, image_name, description, date, user_id) " +
+                "VALUES ('first test picture', 'first test picture name', 'some description', current_timestamp, 3)," +
+                "('second test picture', 'second test picture name', 'another description', current_timestamp, 2)," +
+                "('third test picture', 'third test picture name', 'some other description', current_timestamp, 2)";
         jdbcTemplate.update(sql);
     }
 

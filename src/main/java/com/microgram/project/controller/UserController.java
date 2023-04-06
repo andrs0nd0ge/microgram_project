@@ -59,14 +59,4 @@ public class UserController {
                              @RequestParam String password) {
         userService.registerUser(name, username, email.toLowerCase().trim(), password);
     }
-
-    @GetMapping("/login")
-    public ResponseEntity<UserDto> loginUser(@RequestParam String email,
-                                             @RequestParam String password) {
-        UserDto user = userService.loginUser(email.toLowerCase().trim(), password);
-        if (user != null) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-    }
 }

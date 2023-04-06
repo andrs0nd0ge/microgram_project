@@ -3,7 +3,9 @@ package com.microgram.project.service;
 import com.microgram.project.dao.SubscriptionDao;
 import com.microgram.project.dto.SubscriptionDto;
 import com.microgram.project.entity.Subscription;
+import com.microgram.project.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,11 +22,13 @@ public class SubscriptionService {
                 .collect(Collectors.toList());
     }
 
-    public void subscribe(Long subscriberId, Long subscribedToId) {
-        subsDao.subscribe(subscriberId, subscribedToId);
+    public void subscribe(Authentication auth, Long subscribedToId) {
+        User subscriber = (User) auth.getPrincipal();
+        subsDao.subscribe(subscriber.getId(), subscribedToId);
     }
 
-    public void unsubscribe(Long subscriberId, Long subscribedToId) {
-        subsDao.unsubscribe(subscriberId, subscribedToId);
+    public void unsubscribe(Authentication auth, Long subscribedToId) {
+        User subscriber = (User) auth.getPrincipal();
+        subsDao.unsubscribe(subscriber.getId(), subscribedToId);
     }
 }
