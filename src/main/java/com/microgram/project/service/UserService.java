@@ -74,15 +74,4 @@ public class UserService {
             break;
         }
     }
-
-    public UserDto loginUser(String email, String password) {
-        List<User> users = userDao.getAllUsers();
-        for (User user : users) {
-            password = passwordEncoder.encode(password);
-            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                return UserDto.from(user);
-            }
-        }
-        return null;
-    }
 }
