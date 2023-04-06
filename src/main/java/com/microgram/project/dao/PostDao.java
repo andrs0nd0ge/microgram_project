@@ -1,7 +1,6 @@
 package com.microgram.project.dao;
 
 import com.microgram.project.entity.Post;
-import com.microgram.project.util.FileServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -71,14 +70,14 @@ public class PostDao {
     }
 
     public void makePost(MultipartFile file, String description, Long userId) throws IOException {
-        String fileRoot = "../static/images/" + file.getOriginalFilename();
+        String filename = file.getOriginalFilename();
         byte[] image = file.getBytes();
-        String sql = "insert into posts (image, image_path, description, date, user_id) " +
+        String sql = "insert into posts (image, image_name, description, date, user_id) " +
                 "values (?, ?, ?, current_timestamp, ?)";
         jdbcTemplate.update(con -> {
             PreparedStatement statement = con.prepareStatement(sql);
             statement.setBytes(1, image);
-            statement.setString(2, fileRoot);
+            statement.setString(2, filename);
             statement.setString(3, description);
             statement.setLong(4, userId);
             return statement;

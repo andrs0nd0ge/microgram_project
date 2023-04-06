@@ -131,10 +131,10 @@ public class UtilityClass {
     }
 
     public void insertIntoPosts() {
-        String sql = "INSERT INTO posts (image, image_path, description, date, user_id) " +
-                "VALUES ('first test picture', 'first test picture path', 'some description', current_timestamp, 3)," +
-                "('second test picture', 'second test picture path', 'another description', current_timestamp, 2)," +
-                "('third test picture', 'third test picture path', 'some other description', current_timestamp, 2)";
+        String sql = "INSERT INTO posts (image, image_name, description, date, user_id) " +
+                "VALUES ('first test picture', 'first test picture name', 'some description', current_timestamp, 3)," +
+                "('second test picture', 'second test picture name', 'another description', current_timestamp, 2)," +
+                "('third test picture', 'third test picture name', 'some other description', current_timestamp, 2)";
         jdbcTemplate.update(sql);
     }
 

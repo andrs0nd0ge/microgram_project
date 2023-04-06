@@ -11,9 +11,9 @@ console.log(user);
 
 const firstPost = {
     id: 0,
-    imagePath: 'somepic.jpg',
+    imageName: '1666156904606.jpg',
     description: 'some desc',
-    date: new Date().toDateString(),
+    time: new Date().toLocaleTimeString(),
     user: user,
     isLiked: false
 };
@@ -22,7 +22,7 @@ const secondPost = {
     id: 0,
     imagePath: 'somepic.jpg',
     description: 'some desc',
-    date: new Date().toDateString(),
+    time: new Date().toLocaleTimeString(),
     user: user,
     isLiked: false
 };
@@ -31,7 +31,7 @@ const thirdPost = {
     id: 0,
     imagePath: 'somepic.jpg',
     description: 'some desc',
-    date: new Date().toDateString(),
+    time: new Date().toLocaleTimeString(),
     user: user,
     isLiked: false
 };
@@ -41,7 +41,7 @@ console.log(firstPost);
 const comment = {
     id: 0,
     text: 'some text',
-    date: new Date().toDateString(),
+    time: new Date().toLocaleTimeString(),
     post: firstPost
 };
 
@@ -63,7 +63,7 @@ const post = {
     id: 0,
     imagePath: 'somepic.jpg',
     description: 'some desc',
-    date: new Date().toDateString(),
+    time: new Date().toLocaleTimeString(),
     user: user,
     isLiked: false
 };
@@ -110,14 +110,36 @@ function showSplashScreen() {
     }
 }
 
-createCommentElement(comment);
-
 function createCommentElement(comment) {
     const commentSection = document.getElementById('commentSection');
     commentSection.classList.add('container', 'text-center', 'mt-5');
     commentSection.innerHTML = `<p>Comment:</p>
-        <textarea rows="5" cols="40" placeholder="${comment.text}"></textarea>
-        <p>${comment.date}</p>
+        <textarea rows="5" cols="40">${comment.text}</textarea>
+        <p>${comment.time}</p>
         <p>Posted by: ${comment.post.user.username}</p>
     `;
 }
+
+function createPostElement(post) {
+    const postSection = document.getElementById('postSection');
+    postSection.classList.add('container', 'text-center', 'mb-4');
+    postSection.innerHTML = `
+        <img src="../static/images/${post.imageName}" style="max-width: 700px;" alt="...">
+        <p>${post.description}</p>
+        <p>Posted at: ${post.time}</p>
+        <p>Posted by: ${post.user.username}</p>
+        <button class="btn" onclick="toggleCommentSection()">Hide/Show Comment Section</button>
+    `;
+}
+
+function toggleCommentSection() {
+    const commentSection = document.getElementById('commentSection');
+    commentSection.classList.toggle('d-none');
+}
+
+function addPublication(postElement, comment) {
+    createPostElement(postElement);
+    createCommentElement(comment);
+}
+
+addPublication(firstPost, comment);
