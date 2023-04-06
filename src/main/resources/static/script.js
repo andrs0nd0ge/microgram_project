@@ -28,7 +28,7 @@ const firstPost = {
 
 const secondPost = {
     id: 0,
-    imagePath: 'somepic.jpg',
+    imageName: 'somepic.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
         day: '2-digit',
@@ -45,7 +45,7 @@ const secondPost = {
 
 const thirdPost = {
     id: 0,
-    imagePath: 'somepic.jpg',
+    imageName: 'somepic.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
         day: '2-digit',
