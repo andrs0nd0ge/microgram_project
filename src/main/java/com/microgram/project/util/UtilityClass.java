@@ -57,7 +57,7 @@ public class UtilityClass {
                 "        primary key " +
                 "        unique, " +
                 "    image       bytea," +
-                "    image_path  text, " +
+                "    image_name  text, " +
                 "    description text, " +
                 "    date        timestamp, " +
                 "    user_id     bigint " +

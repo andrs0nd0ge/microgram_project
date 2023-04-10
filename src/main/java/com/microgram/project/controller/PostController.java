@@ -6,6 +6,7 @@ import com.microgram.project.util.FileServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,16 +26,28 @@ public class PostController {
         return postService.getAllPosts();
     }
     @GetMapping("/{userId}")
-    public List<PostDto> getPostsOfUser(@PathVariable Long userId) {
-        return postService.getPostsOfUser(userId);
+    public ResponseEntity<List<PostDto>> getPostsOfUser(@PathVariable Long userId) {
+        List<PostDto> posts = postService.getPostsOfUser(userId);
+        if (posts.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @GetMapping
-    public List<PostDto> getPostsOfOtherUsers(Authentication auth) {
-        return postService.getPostsOfOtherUsers(auth);
+    public ResponseEntity<List<PostDto>> getPostsOfOtherUsers(Authentication auth) {
+        List<PostDto> posts = postService.getPostsOfOtherUsers(auth);
+        if (posts.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @GetMapping("/feed")
-    public List<PostDto> getPostsOfFollowedUsers(Authentication auth) {
-        return postService.getPostsOfFollowedUsers(auth);
+    public ResponseEntity<List<PostDto>> getPostsOfFollowedUsers(Authentication auth) {
+        List<PostDto> posts = postService.getPostsOfFollowedUsers(auth);
+        if (posts.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @PostMapping("/comment/{postId}/{comment}")
     public void leaveCommentOnPost(@PathVariable Long postId, @PathVariable String comment) {

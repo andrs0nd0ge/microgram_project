@@ -20,7 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                        .antMatchers("/posts/post/**", "/posts/comment/**", "/posts/like/**", "/posts/unlike/**", "/subs/**")
+                        .antMatchers("/posts", "/posts/feed", "/posts/post/**", "/posts/comment/**", "/posts/like/**", "/posts/unlike/**", "/subs/**")
                         .fullyAuthenticated();
         http.authorizeRequests()
                         .anyRequest()

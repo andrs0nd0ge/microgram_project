@@ -20,8 +20,12 @@ public class UserController {
     }
 
     @GetMapping("/name/{name}")
-    public List<UserDto> getUsersByName(@PathVariable String name) {
-        return userService.getUsersByName(name.toLowerCase().trim());
+    public ResponseEntity<List<UserDto>> getUsersByName(@PathVariable String name) {
+        List<UserDto> users = userService.getUsersByName(name.toLowerCase().trim());
+        if (users.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/email/{email}")

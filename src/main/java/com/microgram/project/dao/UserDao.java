@@ -30,7 +30,7 @@ public class UserDao {
                 .findFirst();
     }
     public List<User> getUsersByName(String name) {
-        String sql = String.format("select * from users where name like lower('%%%s%%')", name);
+        String sql = String.format("select * from users where name like '%%%s%%'", name);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
 
@@ -49,7 +49,7 @@ public class UserDao {
     }
 
     public Optional<User> checkIfUserExistsByUsername(String username) {
-        String sql = String.format("select * from users where username like lower('%%%s%%')", username);
+        String sql = String.format("select * from users where username like '%%%s%%'", username);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class))
                 .stream()
                 .findFirst();
