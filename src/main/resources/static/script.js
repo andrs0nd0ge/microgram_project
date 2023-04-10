@@ -10,7 +10,7 @@ const user = {
 console.log(user);
 
 const firstPost = {
-    id: 0,
+    id: 1,
     imageName: '1666156904606.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
@@ -27,7 +27,7 @@ const firstPost = {
 };
 
 const secondPost = {
-    id: 0,
+    id: 2,
     imageName: 'somepic.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
@@ -44,7 +44,7 @@ const secondPost = {
 };
 
 const thirdPost = {
-    id: 0,
+    id: 3,
     imageName: 'somepic.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
@@ -88,8 +88,6 @@ function setIdsForPosts() {
     }
 }
 
-setIdsForPosts();
-
 console.log(posts);
 
 const post = {
@@ -108,8 +106,6 @@ const post = {
     user: user,
     isLiked: false
 };
-
-addPost(posts, post);
 
 function addPost(posts, post) {
     posts.push(post);
@@ -156,20 +152,28 @@ function showSplashScreen() {
 }
 
 function showOrHidePostSection() {
-    const post = document.getElementById('postSection');
+    const post = document.getElementById(`thisPost${post.id}`);
     post.classList.toggle('d-none');
 }
 
 function showOrHideCommentSection() {
-    const comment = document.getElementById('commentSection');
+    const comment = document.getElementById(`commentSection${post.id}`);
     if (!comment.classList.contains('d-none')) {
         comment.classList.add('d-none');
     }
 }
 
+function generateIdForPost() {
+    let id;
+    for (let i = 0; i < posts.length; i++) {
+        id = i;
+    }
+    return id;
+}
+
 function createCommentElement(comment) {
     const commentSection = document.createElement('div');
-    commentSection.setAttribute('id', 'commentSection');
+    commentSection.setAttribute('id', `commentSection${comment.post.id}`)
     document.body.append(commentSection);
     commentSection.classList.add('d-flex', 'justify-content-center', 'mt-3', 'mb-3', 'd-none');
     commentSection.innerHTML = `
@@ -188,19 +192,24 @@ function createCommentElement(comment) {
 
 function createPostElement(post) {
     const postSection = document.createElement('div');
-    postSection.setAttribute('id', 'postSection');
     document.body.append(postSection);
-    postSection.classList.add('card', 'border-primary-subtle', 'mb-4', 'mx-auto', 'd-none');
+    postSection.classList.add('card', 'border-primary-subtle', 'mb-4', 'mx-auto');
     postSection.setAttribute('style', 'width: 50rem');
     postSection.innerHTML = `
-        <div class="img-div" id="img-div">
-            <img id="postImage" src="../static/images/${post.imageName}" class="card-img-top" alt="...">
+        <div class="img-div" id="img-div${post.id}">
+            <img id="postImage${post.id}" src="../static/images/${post.imageName}" class="card-img-top" alt="...">
         </div>
         <div class="card-body border-bottom border-primary-subtle">
             <div class="d-flex">
-                <button id="likeButton" class="bg-transparent border-0 p-0"><i id="like" class="h2 bi bi-heart text-primary"></i></button>
-                <button class="ms-4 align-self-center bg-transparent border-0 p-0" style="margin-top: -5px;" onclick="toggleCommentSection()"><i class="h2 bi bi-chat text-primary"></i></button>
-                <button id="bookmarkButton" class="ms-auto bg-transparent border-0 p-0"><i class="h2 bi bi-bookmark text-primary" id="bookmark"></i></button>
+                <button id="likeButton${post.id}" class="bg-transparent border-0 p-0">
+                    <i id="like${post.id}" class="h2 bi bi-heart text-primary"></i>
+                </button>
+                <button id="commentButton${post.id}" class="ms-4 align-self-center bg-transparent border-0 p-0" style="margin-top: -5px;">
+                    <i class="h2 bi bi-chat text-primary"></i>
+                </button>
+                <button id="bookmarkButton${post.id}" class="ms-auto bg-transparent border-0 p-0">
+                    <i class="h2 bi bi-bookmark text-primary" id="bookmark${post.id}"></i>
+                </button>
             </div>
         </div>
         <div class="card-body">
@@ -213,21 +222,25 @@ function createPostElement(post) {
             </div>
         </div>
     `;
-    const pressLike = document.getElementById('likeButton');
+    addPost(posts, post);
+    const pressLike = document.getElementById(`likeButton${post.id}`);
     pressLike.addEventListener('click', () => {
-        postIsLiked = toggleLike(post.isLiked);
-        post.isLiked = postIsLiked;
+        post.isLiked = toggleLike(post, post.isLiked);
+    });
+    const pressComment = document.getElementById(`commentButton${post.id}`);
+    pressComment.addEventListener('click', () => {
+        toggleCommentSection();
     })
-    const pressBookmark = document.getElementById('bookmarkButton');
+    const pressBookmark = document.getElementById(`bookmarkButton${post.id}`);
     pressBookmark.addEventListener('click', () => {
-        toggleBookmark();
-    })
-    const pressLikeOnImage = document.getElementById('postImage');  
+        toggleBookmark(post);
+    });
+    const pressLikeOnImage = document.getElementById(`postImage${post.id}`);
     pressLikeOnImage.addEventListener('dblclick', () => {
-        postIsLiked = toggleLike(post.isLiked);
+        let postIsLiked = toggleLike(post, post.isLiked);
         post.isLiked = postIsLiked;
         if (postIsLiked) {
-            const image = document.getElementById('img-div');
+            const image = document.getElementById(`img-div${post.id}`);
             const likeOnImageOutline = document.createElement('i');
             likeOnImageOutline.classList.add('bi', 'bi-heart-fill', 'text-white', 'img-heart-icon-outline');
             const likeOnImage = document.createElement('i');
@@ -242,8 +255,8 @@ function createPostElement(post) {
     });
 }
 
-function toggleLike(like) {
-    const likeIcon = document.getElementById('like');
+function toggleLike(post, like) {
+    const likeIcon = document.getElementById(`like${post.id}`);
     if (likeIcon.classList.contains('bi-heart')) {
         like = true;
         likeIcon.classList.remove('bi-heart');
@@ -256,8 +269,8 @@ function toggleLike(like) {
     return like;
 }
 
-function toggleBookmark() {
-    const bookmark = document.getElementById('bookmark');
+function toggleBookmark(post) {
+    const bookmark = document.getElementById(`bookmark${post.id}`);
     if (bookmark.classList.contains('bi-bookmark')) {
         bookmark.classList.remove('bi-bookmark');
         bookmark.classList.add('bi-bookmark-fill');
@@ -268,7 +281,7 @@ function toggleBookmark() {
 }
 
 function toggleCommentSection() {
-    const commentSection = document.getElementById('commentSection');
+    const commentSection = document.getElementById(`commentSection${comment.post.id}`);
     commentSection.classList.toggle('d-none');
 }
 
@@ -276,5 +289,3 @@ function addPublication(postElement, comment) {
     createPostElement(postElement);
     createCommentElement(comment);
 }
-
-addPublication(firstPost, comment);
