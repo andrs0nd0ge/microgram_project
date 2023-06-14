@@ -15,7 +15,7 @@ import java.util.List;
 public class LikeController {
     private final LikeService likeService;
     @GetMapping
-    public List<LikeDto> getLikes() {
+    public List<LikeDto> getLikes()  {
         return likeService.getAllLikes();
     }
     @GetMapping("/{postId}")

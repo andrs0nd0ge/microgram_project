@@ -1,3 +1,5 @@
+const BASE_URL = 'http://localhost:9889';
+
 const user = {
     id: 0,
     name: 'First',
@@ -10,7 +12,7 @@ const user = {
 console.log(user);
 
 const firstPost = {
-    id: 0,
+    id: 1,
     imageName: '1666156904606.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
@@ -27,7 +29,7 @@ const firstPost = {
 };
 
 const secondPost = {
-    id: 0,
+    id: 2,
     imageName: 'somepic.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
@@ -44,7 +46,7 @@ const secondPost = {
 };
 
 const thirdPost = {
-    id: 0,
+    id: 3,
     imageName: 'somepic.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
@@ -74,10 +76,27 @@ const comment = {
         hour: '2-digit',
         minute: '2-digit'
     }),
-    post: firstPost
+    post: firstPost,
+    user: user
 };
 
 console.log(comment);
+
+const secondComment = {
+    id: 1,
+    text: 'some other text',
+    date: new Date().toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    }),
+    time: new Date().toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit'
+    }),
+    post: secondPost,
+    user: user
+}
 
 const posts = [firstPost, secondPost, thirdPost];
 
@@ -87,26 +106,24 @@ function setIdsForPosts() {
     }
 }
 
-setIdsForPosts();
-
 console.log(posts);
 
 const post = {
     id: 0,
     imagePath: 'somepic.jpg',
     description: 'some desc',
-    time: new Date().toLocaleTimeString(),
+    date: new Date().toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    }),
+    time: new Date().toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit'
+    }),
     user: user,
     isLiked: false
 };
-
-addPost(posts, post);
-
-function addPost(posts, post) {
-    posts.push(post);
-}
-
-console.log(posts);
 
 function authorizeUser(user) {
     user.isAuthorised = true;
@@ -124,48 +141,46 @@ function likePost(posts, postId) {
     }
 }
 
-const leaveLike = likePost(posts, 4);
-
-console.log(leaveLike);
+likePost(posts, 4);
 
 function hideSplashScreen() {
-    const splashScreen = document.getElementById('splash');
-    splashScreen.classList.add('d-none');
-    const showSplash = document.getElementById('showSplash');
-    showSplash.classList.remove('d-none');
-    showOrHidePostSection();
-    showOrHideCommentSection();
+    const splashScreen = document.getElementById('bg');
+    splashScreen.classList.toggle('d-none');
+    // const showSplash = document.getElementById('showSplash');
+    // showSplash.classList.remove('d-none');
+    // showOrHidePostSection();
+    // showOrHideCommentSection();
 }
 
 function showSplashScreen() {
-    const splashScreen = document.getElementById('splash');
-    if (splashScreen.classList.contains('d-none')) {
-        splashScreen.classList.remove('d-none');
-    }
-    showOrHidePostSection();
-    showOrHideCommentSection();
+    const splashScreen = document.getElementById('bg');
+    splashScreen.classList.toggle('d-none');
+    // showOrHidePostSection();
+    // showOrHideCommentSection();
 }
 
-function showOrHidePostSection() {
-    const post = document.getElementById('postSection');
-    post.classList.toggle('d-none');
-}
+// function showOrHidePostSection() {
+    // const post = document.getElementById(`thisPost${post.id}`);
+    // post.classList.toggle('d-none');
+// }
 
-function showOrHideCommentSection() {
-    const comment = document.getElementById('commentSection');
-    if (!comment.classList.contains('d-none')) {
-        comment.classList.add('d-none');
-    }
-}
+// function showOrHideCommentSection() {
+//     const comment = document.getElementById(`commentSection${post.id}`);
+//     if (!comment.classList.contains('d-none')) {
+//         comment.classList.add('d-none');
+//     }
+// }
 
 function createCommentElement(comment) {
-    const commentSection = document.getElementById('commentSection');
+    const commentSection = document.createElement('div');
+    commentSection.setAttribute('id', `commentSection${comment.post.id}`);
+    document.body.append(commentSection);
     commentSection.classList.add('d-flex', 'justify-content-center', 'mt-3', 'mb-3', 'd-none');
     commentSection.innerHTML = `
         <div class="card border-primary-subtle" style="width: 50rem;">
             <div class="card-body">
                 <div class="d-flex">
-                    <span class="text-primary fs-5">${comment.post.user.username}</span>
+                    <span class="text-primary fs-5">${comment.user.username}</span>
                     <span class="ms-auto text-secondary align-self-center border-start border-primary-subtle ps-2">${comment.date}, ${comment.time}</span>
                 </div>
                 <hr class="text-primary">
@@ -175,35 +190,122 @@ function createCommentElement(comment) {
     `;
 }
 
-function createPostElement(post) {
-    const postSection = document.getElementById('postSection');
-    postSection.classList.add('card', 'border-primary-subtle', 'mb-4', 'mx-auto', 'd-none');
-    postSection.setAttribute('style', 'width: 50rem');
-    postSection.innerHTML = `
-        <img src="../static/images/${post.imageName}" class="card-img-top" alt="...">
+// function createPost(post) {
+//     post.id = posts.length + 1;
+//     // ......
+//     posts.push(post);
+// }
+
+function createPostSection(post) {
+    const postSection = document.createElement('div');
+    postSection.setAttribute('id', `postSection${post.id}`);
+    document.body.append(postSection);
+    return postSection;
+}
+
+function createPostElement(post, comment) {
+    const postSection = createPostSection(post);
+    const postElement = document.createElement('div');
+    postElement.setAttribute('id', 'postElement');
+    postSection.append(postElement);
+    postElement.classList.add('card', 'border-primary-subtle', 'mb-4', 'mx-auto');
+    postElement.setAttribute('style', 'width: 50rem');
+    postElement.innerHTML = `
+        <div class="img-div" id="img-div${post.id}">
+            <img id="postImage${post.id}" src="../static/images/${post.imageName}" class="card-img-top" alt="...">
+        </div>
+        <div class="card-body border-bottom border-primary-subtle">
+            <div class="d-flex">
+                <button id="likeButton${post.id}" class="bg-transparent border-0 p-0">
+                    <i id="like${post.id}" class="h2 bi bi-heart text-primary"></i>
+                </button>
+                <button id="commentButton${post.id}" class="ms-4 align-self-center bg-transparent border-0 p-0" style="margin-top: -5px;">
+                    <i class="h2 bi bi-chat text-primary"></i>
+                </button>
+                <button id="bookmarkButton${post.id}" class="ms-auto bg-transparent border-0 p-0">
+                    <i class="h2 bi bi-bookmark text-primary" id="bookmark${post.id}"></i>
+                </button>
+            </div>
+        </div>
         <div class="card-body">
-            <p class="card-text">${post.description}</p>
+            <p class="card-text fs-5">${post.description}</p>
         </div>
         <div class="card-footer border-primary-subtle bg-white">
-            <div class="d-flex mb-3">
-                <span>Posted by: <span class="text-primary fs-5">${post.user.username}</span></span>
+            <div class="d-flex mb-1">
+                <span>Posted by: <span class="text-primary fs-6">${post.user.username}</span></span>
                 <span class="ms-auto align-self-center text-secondary border-start border-primary-subtle ps-2">${post.date}, ${post.time}</span>
-            </div>
-            <div class="text-center flex-wrap">
-                <button class="btn btn-outline-primary mb-2" onclick="toggleCommentSection()">Hide/Show Comment Section</button>
             </div>
         </div>
     `;
+    operatePost(post, comment);
+    return postElement;
 }
 
-function toggleCommentSection() {
-    const commentSection = document.getElementById('commentSection');
+function toggleLike(post, like) {
+    const likeIcon = document.getElementById(`like${post.id}`);
+    if (likeIcon.classList.contains('bi-heart')) {
+        like = true;
+        likeIcon.classList.remove('bi-heart');
+        likeIcon.classList.add('bi-heart-fill');
+    } else if (likeIcon.classList.contains('bi-heart-fill')) {
+        like = false;
+        likeIcon.classList.remove('bi-heart-fill');
+        likeIcon.classList.add('bi-heart');
+    }
+    return like;
+}
+
+function toggleBookmark(post) {
+    const bookmark = document.getElementById(`bookmark${post.id}`);
+    if (bookmark.classList.contains('bi-bookmark')) {
+        bookmark.classList.remove('bi-bookmark');
+        bookmark.classList.add('bi-bookmark-fill');
+    } else if (bookmark.classList.contains('bi-bookmark-fill')) {
+        bookmark.classList.remove('bi-bookmark-fill');
+        bookmark.classList.add('bi-bookmark');
+    }
+}
+
+function toggleCommentSection(comment) {
+    const commentSection = document.getElementById(`commentSection${comment.post.id}`);
     commentSection.classList.toggle('d-none');
 }
 
-function addPublication(postElement, comment) {
-    createPostElement(postElement);
-    createCommentElement(comment);
+function operatePost(post, comment) {
+    const pressLike = document.getElementById(`likeButton${post.id}`);
+    pressLike.addEventListener('click', () => {
+        post.isLiked = toggleLike(post, post.isLiked);
+    });
+    const pressComment = document.getElementById(`commentButton${post.id}`);
+    pressComment.addEventListener('click', () => {
+        toggleCommentSection(comment);
+    })
+    const pressBookmark = document.getElementById(`bookmarkButton${post.id}`);
+    pressBookmark.addEventListener('click', () => {
+        toggleBookmark(post);
+    });
+    const pressLikeOnImage = document.getElementById(`postImage${post.id}`);
+    pressLikeOnImage.addEventListener('dblclick', () => {
+        let postIsLiked = toggleLike(post, post.isLiked);
+        post.isLiked = postIsLiked;
+        if (postIsLiked) {
+            const image = document.getElementById(`img-div${post.id}`);
+            const likeOnImageOutline = document.createElement('i');
+            likeOnImageOutline.classList.add('bi', 'bi-heart-fill', 'text-white', 'img-heart-icon-outline');
+            const likeOnImage = document.createElement('i');
+            likeOnImage.classList.add('bi', 'bi-heart-fill', 'text-primary', 'img-heart-icon');
+            image.append(likeOnImageOutline);
+            image.append(likeOnImage);
+            setTimeout(() => {
+                likeOnImageOutline.remove();
+                likeOnImage.remove();
+            }, 1500);
+        }
+    });
 }
 
-addPublication(firstPost, comment);
+function addPost(postElement, comment){
+    createPostElement(postElement, comment);
+    createCommentElement(comment);
+    posts.push(postElement);
+}

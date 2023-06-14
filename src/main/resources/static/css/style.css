@@ -17,3 +17,23 @@
     background: rgb(53,48,144);
     background: linear-gradient(90deg, rgba(53,48,144,1) 0%, rgba(0,169,233,1) 50%);
 }
+
+.img-div {
+    position: relative;
+}
+
+.img-heart-icon-outline {
+    font-size: 64px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.img-heart-icon {
+    font-size: 60px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
