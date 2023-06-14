@@ -3,7 +3,6 @@ package com.microgram.project.controller;
 import com.microgram.project.dto.SubscriptionDto;
 import com.microgram.project.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,13 +19,13 @@ public class SubscriptionController {
     }
 
     @PostMapping("/sub/{followedId}")
-    public void subscribe(Authentication auth, @PathVariable Long followedId) {
-        subService.subscribe(auth, followedId);
+    public void subscribe(@RequestParam("id") Long userId, @PathVariable Long followedId) {
+        subService.subscribe(userId, followedId);
     }
 
     @DeleteMapping("/unsub/{followedId}")
-    public void unsubscribe(Authentication auth, @PathVariable Long followedId) {
-        subService.unsubscribe(auth, followedId);
+    public void unsubscribe(@RequestParam("id") Long userId, @PathVariable Long followedId) {
+        subService.unsubscribe(userId, followedId);
     }
 }
 

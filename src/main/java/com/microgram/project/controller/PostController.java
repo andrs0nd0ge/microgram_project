@@ -9,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,16 +33,16 @@ public class PostController {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @GetMapping
-    public ResponseEntity<List<PostDto>> getPostsOfOtherUsers(Authentication auth) {
-        List<PostDto> posts = postService.getPostsOfOtherUsers(auth);
+    public ResponseEntity<List<PostDto>> getPostsOfOtherUsers(Long userId) {
+        List<PostDto> posts = postService.getPostsOfOtherUsers(userId);
         if (posts.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
     @GetMapping("/feed")
-    public ResponseEntity<List<PostDto>> getPostsOfFollowedUsers(Authentication auth) {
-        List<PostDto> posts = postService.getPostsOfFollowedUsers(auth);
+    public ResponseEntity<List<PostDto>> getPostsOfFollowedUsers(Long userId) {
+        List<PostDto> posts = postService.getPostsOfFollowedUsers(userId);
         if (posts.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
@@ -54,25 +53,27 @@ public class PostController {
         postService.leaveCommentOnPost(postId, comment);
     }
     @DeleteMapping("/comment/{postId}/{commentId}")
-    public void deleteCommentOnPost(Authentication auth, @PathVariable Long postId, @PathVariable Long commentId) {
-        postService.deleteCommentOnPost(auth, postId, commentId);
+    public void deleteCommentOnPost(@RequestParam("id") Long userId, @PathVariable Long postId, @PathVariable Long commentId) {
+        postService.deleteCommentOnPost(userId, postId, commentId);
     }
     @GetMapping("/like/{postId}")
-    public void leaveLikeUnderPost(Authentication auth, @PathVariable Long postId) {
-        postService.leaveLikeUnderPost(auth, postId);
+    public void leaveLikeUnderPost(@RequestParam("id") Long userId, @PathVariable Long postId) {
+        postService.leaveLikeUnderPost(userId, postId);
     }
     @DeleteMapping("/unlike/{postId}")
-    public void unlikePost(Authentication auth, @PathVariable Long postId) {
-        postService.unlikePost(auth, postId);
+    public void unlikePost(@RequestParam("id") Long userId, @PathVariable Long postId) {
+        postService.unlikePost(userId, postId);
     }
     @PostMapping("/post/{description}")
-    public void makePost(@RequestParam("file") MultipartFile file, @PathVariable String description, Authentication auth) {
-        postService.makePost(file, description, auth);
+    public void makePost(@RequestParam("file") MultipartFile file,
+                         @PathVariable String description,
+                         @RequestParam("id") Long userId) {
+        postService.makePost(file, description, userId);
         fileService.save(file);
     }
     @DeleteMapping("/post/{postId}")
-    public void deletePost(Authentication auth, @PathVariable Long postId) {
-        postService.deletePost(auth, postId);
+    public void deletePost(@RequestParam("id") Long userId, @PathVariable Long postId) {
+        postService.deletePost(userId, postId);
     }
     @GetMapping("/image/{postId}")
     public ResponseEntity<Resource> getPictureOfPost(@PathVariable Long postId) {

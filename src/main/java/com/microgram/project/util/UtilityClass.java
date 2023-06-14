@@ -1,9 +1,7 @@
 package com.microgram.project.util;
 
-import com.microgram.project.entity.User;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
@@ -12,7 +10,6 @@ import java.sql.PreparedStatement;
 @AllArgsConstructor
 public class UtilityClass {
     private final JdbcTemplate jdbcTemplate;
-    private final PasswordEncoder passwordEncoder;
 
     public void createUsersTable() {
         String sql = "create table if not exists users " +
@@ -101,21 +98,15 @@ public class UtilityClass {
         jdbcTemplate.update(sql);
     }
     public void insertIntoUsers() {
-        User first = new User();
-        first.setPassword(passwordEncoder.encode("123"));
-        User second = new User();
-        second.setPassword(passwordEncoder.encode("123"));
-        User third = new User();
-        third.setPassword(passwordEncoder.encode("123"));
         String sql = "INSERT INTO users (name, username, email, password, post_qty, subs_qty, followers_qty) " +
                 "VALUES ('First', 'first', 'onetest@test', ?, 0, 0, 0), " +
                 "('Second', 'second', 'twotest@test', ?, 0, 0, 0), " +
                 "('Third', 'third', 'threetest@test', ?, 0, 0, 0);";
         jdbcTemplate.update(con -> {
             PreparedStatement statement = con.prepareStatement(sql);
-            statement.setString(1, first.getPassword());
-            statement.setString(2, second.getPassword());
-            statement.setString(3, third.getPassword());
+            statement.setString(1, "123");
+            statement.setString(2, "123");
+            statement.setString(3, "123");
             return statement;
         });
     }

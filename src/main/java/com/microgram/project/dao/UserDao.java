@@ -23,12 +23,6 @@ public class UserDao {
                 .stream()
                 .findFirst();
     }
-    public Optional<User> getUserForAuthentication(String username) {
-        String sql = String.format("select * from users where username = '%s'", username);
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class))
-                .stream()
-                .findFirst();
-    }
     public List<User> getUsersByName(String name) {
         String sql = String.format("select * from users where name like '%%%s%%'", name);
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));

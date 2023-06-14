@@ -4,7 +4,6 @@ import com.microgram.project.dao.UserDao;
 import com.microgram.project.dto.UserDto;
 import com.microgram.project.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserDao userDao;
-    private final PasswordEncoder passwordEncoder;
     public List<UserDto> getAllUsers() {
         List<User> users = userDao.getAllUsers();
         return users.stream()
@@ -67,7 +65,6 @@ public class UserService {
             if (user.getUsername().equals(username) || user.getEmail().equals(email)) {
                 System.out.println("User already exists");
             } else {
-                password = passwordEncoder.encode(password);
                 userDao.registerUser(name, username, email, password);
                 System.out.println("User was registered successfully");
             }
