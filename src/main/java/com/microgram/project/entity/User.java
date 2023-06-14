@@ -9,7 +9,7 @@ import lombok.Setter;
 public class User {
     private Long id;
     private String name;
-    private String username;
+    private String usernme;
     private String email;
     private String password;
     @JsonProperty("post_qty")
