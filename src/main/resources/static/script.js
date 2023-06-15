@@ -1,4 +1,7 @@
 const BASE_URL = 'http://localhost:9889';
+const POSTS_URL = '/posts';
+
+const MAKE_POST = '/make-post';
 
 const user = {
     id: 0,
@@ -304,8 +307,39 @@ function operatePost(post, comment) {
     });
 }
 
-function addPost(postElement, comment){
+function addPost(postElement, comment) {
     createPostElement(postElement, comment);
     createCommentElement(comment);
     posts.push(postElement);
+}
+
+document.getElementById('uploadForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    executeAddingPost();
+});
+
+function executeAddingPost() {
+    let form = document.getElementById('uploadForm');
+    let description = document.getElementById('descText').value;
+    let image = document.getElementById('imageFile').files[0];
+    if (image) {
+        let formData = new FormData();
+        formData.append('imageFile', image);
+        formData.append('desc', description);
+        formData.append('id', 1);
+
+        axios.post(BASE_URL + POSTS_URL + MAKE_POST, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(function (response) {
+                console.log("Post was created successfully");
+                form.classList.add('d-none');
+            })
+            .catch(function (error) {
+                console.log("Something went wrong");
+            });
+    }
+
 }

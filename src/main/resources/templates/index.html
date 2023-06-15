@@ -34,11 +34,16 @@
         </div>
     </div>
 </nav>
-    <div id="bg" class="d-flex justify-content-center bg-primary background">
-        <div id="splash">
-            <button class="hideSplashButton btn text-white" onclick="hideSplashScreen()">Hide Splash Screen</button>
-        </div>
-    </div>
+<form class="d-flex mt-5 justify-content-center" enctype="multipart/form-data" id="uploadForm">
+    <input id="imageFile" name="file" type="file">
+    <input id="descText" name="desc" placeholder="Enter description..." type="text">
+    <button type="submit">Make Post</button>
+</form>
+<!--    <div id="bg" class="d-flex justify-content-center bg-primary background">-->
+<!--        <div id="splash">-->
+<!--            <button class="hideSplashButton btn text-white" onclick="hideSplashScreen()">Hide Splash Screen</button>-->
+<!--        </div>-->
+<!--    </div>-->
 <!--    <div id="showSplash" class="d-flex justify-content-center my-5 d-none">-->
 <!--       <button class="showSplashButton btn" onclick="showSplashScreen()">Show Splash Screen</button>-->
 <!--    </div>-->

@@ -56,25 +56,30 @@ public class PostController {
     public void deleteCommentOnPost(@RequestParam("id") Long userId, @PathVariable Long postId, @PathVariable Long commentId) {
         postService.deleteCommentOnPost(userId, postId, commentId);
     }
+
     @GetMapping("/like/{postId}")
     public void leaveLikeUnderPost(@RequestParam("id") Long userId, @PathVariable Long postId) {
         postService.leaveLikeUnderPost(userId, postId);
     }
+
     @DeleteMapping("/unlike/{postId}")
     public void unlikePost(@RequestParam("id") Long userId, @PathVariable Long postId) {
         postService.unlikePost(userId, postId);
     }
-    @PostMapping("/post/{description}")
-    public void makePost(@RequestParam("file") MultipartFile file,
-                         @PathVariable String description,
+
+    @PostMapping("/make-post")
+    public void makePost(@RequestParam("imageFile") MultipartFile file,
+                         @RequestParam("desc") String description,
                          @RequestParam("id") Long userId) {
         postService.makePost(file, description, userId);
         fileService.save(file);
     }
+
     @DeleteMapping("/post/{postId}")
     public void deletePost(@RequestParam("id") Long userId, @PathVariable Long postId) {
         postService.deletePost(userId, postId);
     }
+
     @GetMapping("/image/{postId}")
     public ResponseEntity<Resource> getPictureOfPost(@PathVariable Long postId) {
         Resource resource = postService.getPictureOfPost(postId);
