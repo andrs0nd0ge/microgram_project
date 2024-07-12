@@ -2,7 +2,7 @@ package com.microgram.project.controller;
 
 import com.microgram.project.dto.PostDto;
 import com.microgram.project.service.PostService;
-import com.microgram.project.util.FileServiceImpl;
+import com.microgram.project.util.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
-    private final FileServiceImpl fileService;
+    private final FileService fileService;
     @GetMapping("/main")
     public List<PostDto> getPosts() {
         return postService.getAllPosts();
@@ -40,6 +40,7 @@ public class PostController {
         }
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
+
     @GetMapping("/feed")
     public ResponseEntity<List<PostDto>> getPostsOfFollowedUsers(Long userId) {
         List<PostDto> posts = postService.getPostsOfFollowedUsers(userId);
@@ -48,10 +49,14 @@ public class PostController {
         }
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
-    @PostMapping("/comment/{postId}/{comment}")
-    public void leaveCommentOnPost(@PathVariable Long postId, @PathVariable String comment) {
-        postService.leaveCommentOnPost(postId, comment);
+
+    @PostMapping("/comment")
+    public void leaveCommentOnPost(@RequestParam("post_id") Long postId,
+                                   @RequestParam("user_id") Long userId,
+                                   @RequestParam("comment") String comment) {
+        postService.leaveCommentOnPost(postId, userId, comment);
     }
+
     @DeleteMapping("/comment/{postId}/{commentId}")
     public void deleteCommentOnPost(@RequestParam("id") Long userId, @PathVariable Long postId, @PathVariable Long commentId) {
         postService.deleteCommentOnPost(userId, postId, commentId);

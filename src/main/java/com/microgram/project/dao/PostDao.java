@@ -48,9 +48,9 @@ public class PostDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class));
     }
 
-    public void leaveCommentOnPost(Long postId, String comment) {
-        String sql = String.format("insert into comments (text, date, post_id) " +
-                "values ('%s', current_timestamp, %s);", comment, postId);
+    public void leaveCommentOnPost(Long postId, Long userId, String comment) {
+        String sql = String.format("insert into comments (text, date, post_id, user_id) " +
+                "values ('%s', current_timestamp, %s, %s);", comment, postId, userId);
         jdbcTemplate.update(sql);
     }
 
@@ -86,15 +86,16 @@ public class PostDao {
     }
 
     public void deletePost(Long userId, Long postId) {
-        String post = String.format("delete from posts " +
+        String sql = String.format("delete from posts " +
                 "where user_id = %s and id = %s", userId, postId);
-        jdbcTemplate.update(post);
+        jdbcTemplate.update(sql);
         updatePostsQty(userId);
     }
 
     public Post getPostWithPicture(Long postId) {
         String sql = String.format("select image from posts where id = %s", postId);
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class)).stream()
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class))
+                .stream()
                 .findFirst()
                 .orElse(null);
     }

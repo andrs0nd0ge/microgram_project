@@ -46,8 +46,8 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public void leaveCommentOnPost(Long postId, String comment) {
-        postDao.leaveCommentOnPost(postId, comment);
+    public void leaveCommentOnPost(Long postId, Long userId, String comment) {
+        postDao.leaveCommentOnPost(postId, userId, comment);
     }
 
     public void leaveLikeUnderPost(Long userId, Long postId) {

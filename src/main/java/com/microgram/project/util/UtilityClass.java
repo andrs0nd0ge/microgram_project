@@ -12,7 +12,7 @@ public class UtilityClass {
     private final JdbcTemplate jdbcTemplate;
 
     public void createUsersTable() {
-        String sql = "create table if not exists users " +
+        String sql = "create table if not exists microgram.public.users " +
                 "( " +
                 "    id            bigserial " +
                 "        primary key " +
@@ -31,7 +31,7 @@ public class UtilityClass {
     }
 
     public void createSubscriptionsTable() {
-        String sql = "create table if not exists subscriptions " +
+        String sql = "create table if not exists microgram.public.subscriptions " +
                 "( " +
                 "    subscriber_id    bigint, " +
                 "    subscribed_to_id bigint, " +
@@ -48,7 +48,7 @@ public class UtilityClass {
     }
 
     public void createPostsTable() {
-        String sql = "create table if not exists posts " +
+        String sql = "create table if not exists microgram.public.posts " +
                 "( " +
                 "    id          bigserial " +
                 "        primary key " +
@@ -66,7 +66,7 @@ public class UtilityClass {
     }
 
     public void createLikesTable() {
-        String sql = "create table if not exists likes " +
+        String sql = "create table if not exists microgram.public.likes " +
                 "( " +
                 "    user_id    bigint, " +
                 "    post_id    bigint, " +
@@ -83,7 +83,7 @@ public class UtilityClass {
     }
 
     public void createCommentsTable() {
-        String sql = "create table if not exists comments " +
+        String sql = "create table if not exists microgram.public.comments " +
                 "( " +
                 "    id   bigserial " +
                 "         primary key " +
@@ -93,7 +93,11 @@ public class UtilityClass {
                 "    post_id bigint" +
                 "       constraint comments_post_fk" +
                 "           references posts(id)" +
-                "           on update cascade on delete cascade" +
+                "           on update cascade on delete cascade," +
+                "    user_id bigint" +
+                "       constraint comments_user_fk" +
+                "       references users(id)" +
+                "       on update cascade on delete cascade" +
                 ");";
         jdbcTemplate.update(sql);
     }
@@ -138,11 +142,11 @@ public class UtilityClass {
     }
 
     public void insertIntoComments() {
-        String sql = "INSERT INTO comments (text, date, post_id) " +
-                "VALUES ('some text', current_timestamp, 2)," +
-                "('another text', current_timestamp, 3)," +
-                "('some other text', current_timestamp, 1)," +
-                "('text', current_timestamp, 2)";
+        String sql = "INSERT INTO comments (text, date, post_id, user_id) " +
+                "VALUES ('some text', current_timestamp, 2, 1)," +
+                "('another text', current_timestamp, 3, 3)," +
+                "('some other text', current_timestamp, 1, 2)," +
+                "('text', current_timestamp, 2, 2)";
         jdbcTemplate.update(sql);
     }
 
