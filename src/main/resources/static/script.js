@@ -15,8 +15,10 @@ function createPostSection() {
 
 createPostSection();
 
+let postIdCounter = 0;
+
 const user = {
-    id: 0,
+    id: 1,
     name: 'First',
     username: 'first',
     email: 'onetest@test',
@@ -374,7 +376,7 @@ function operatePost(post) {
     });
     const pressLikeOnImage = document.getElementById(`postImage${post.id}`);
     pressLikeOnImage.addEventListener('dblclick', () => {
-        let postIsLiked = toggleLike(post, post.isLiked);
+        const postIsLiked = toggleLike(post, post.isLiked);
         post.isLiked = postIsLiked;
         if (postIsLiked) {
             const image = document.getElementById(`img-div${post.id}`);
@@ -397,39 +399,104 @@ function addPost(postElement) {
     posts.push(postElement);
 }
 
-document.getElementById('uploadForm').addEventListener('submit', function (event) {
-    event.preventDefault();
-    executeAddingPost();
-});
 
 function executeAddingComment() {
 
 }
 
+function createPostUploadForm() {
+    const form = document.createElement('form');
+    form.classList.add('d-flex', 'mt-5', 'justify-content-center');
+    form.setAttribute('encrypt', 'multipart/form-data');
+    form.setAttribute('id', 'postUploadForm');
+
+    const image = document.createElement('input');
+    image.setAttribute('id', 'imageFile');
+    image.setAttribute('type', 'file');
+    image.setAttribute('name', 'file');
+    form.append(image);
+
+    const description = document.createElement('input');
+    description.setAttribute('id', 'descText');
+    description.setAttribute('type', 'text');
+    description.setAttribute('name', 'desc');
+    description.setAttribute('placeholder', 'Enter description...');
+    form.append(description);
+
+    const userId = document.createElement('input');
+    userId.setAttribute('id', 'userId');
+    userId.setAttribute('type', 'hidden');
+    userId.setAttribute('name', 'userId');
+    userId.setAttribute('value', `${user.id}`);
+    form.append(userId);
+
+    const submitBtn = document.createElement('button');
+    submitBtn.setAttribute('type', 'submit');
+    submitBtn.innerText = 'Make Post';
+    form.append(submitBtn);
+
+    const mainNavbar = document.getElementById('mainNavbar');
+    mainNavbar.after(form);
+}
+
+createPostUploadForm();
+
+document.getElementById('postUploadForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+    // executeAddingPost();
+});
+
 function executeAddingPost() {
-    let description = document.getElementById('descText').value;
-    let image = document.getElementById('imageFile').files[0];
-    let userId = document.getElementById('userId').value;
-    if (image) {
-        let formData = new FormData();
+    const description = document.getElementById('descText').value;
+    const image = document.getElementById('imageFile').files[0];
+    const userId = document.getElementById('userId').value;
+    if (image && description) {
+        const formData = new FormData();
         formData.append('imageFile', image);
         formData.append('desc', description);
         formData.append('id', userId);
 
-        // axios.post(BASE_URL + POSTS_URL + MAKE_POST, formData, {
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data'
-        //     }
-        // })
-        // .then(function() {
-        //     console.log("Post was created successfully");
-        //     // form.classList.add('d-none');
-        //     addPost(post);
-        //     console.log(post);
-        // })
-        // .catch(function (error) {
-        //     console.log(error.message);
-        // });
+        axios.post(BASE_URL + POSTS_URL + MAKE_POST, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(function () {
+                console.log("Post was created successfully");
+
+                const post = {
+                    id: postIdCounter++,
+                    imageName: image.name,
+                    'description': description,
+                    date: new Date().toLocaleDateString('ru-RU', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    }),
+                    time: new Date().toLocaleTimeString('ru-RU', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                    user: {
+                        id: userId,
+                        name: 'First',
+                        username: 'first',
+                        email: 'onetest@test',
+                        password: '123',
+                        isAuthorised: false
+                    },
+                    isLiked: false
+                };
+
+                addPost(post);
+
+                document.getElementById('postUploadForm').reset();
+
+                console.log(post);
+            })
+            .catch(function (error) {
+                console.log(error.message);
+            });
     }
 
 }
