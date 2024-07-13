@@ -1,5 +1,6 @@
 package com.microgram.project.controller;
 
+import com.microgram.project.dto.CommentForPostsDto;
 import com.microgram.project.dto.PostDto;
 import com.microgram.project.service.PostService;
 import com.microgram.project.util.FileService;
@@ -51,17 +52,18 @@ public class PostController {
     }
 
     @PostMapping("/comment")
-    public void leaveCommentOnPost(@RequestParam("post_id") Long postId,
-                                   @RequestParam("user_id") Long userId,
-                                   @RequestParam("comment") String comment) {
-        postService.leaveCommentOnPost(postId, userId, comment);
+    public void leaveCommentOnPost(@RequestBody CommentForPostsDto commentDto) {
+        postService.leaveCommentOnPost(commentDto);
     }
 
-    @DeleteMapping("/comment/{postId}/{commentId}")
-    public void deleteCommentOnPost(@RequestParam("id") Long userId,
-                                    @PathVariable Long postId,
-                                    @PathVariable Long commentId) {
-        postService.deleteCommentOnPost(userId, postId, commentId);
+    @DeleteMapping("/comment")
+    public void deleteCommentOnPost(
+//            @RequestParam("id") Long userId,
+//            @PathVariable Long postId,
+//            @PathVariable Long commentId
+            @RequestBody CommentForPostsDto commentDto
+    ) {
+        postService.deleteCommentOnPost(commentDto);
     }
 
     @GetMapping("/like/{postId}")

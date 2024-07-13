@@ -1,6 +1,7 @@
 package com.microgram.project.service;
 
 import com.microgram.project.dao.PostDao;
+import com.microgram.project.dto.CommentForPostsDto;
 import com.microgram.project.dto.PostDto;
 import com.microgram.project.entity.Post;
 import lombok.RequiredArgsConstructor;
@@ -46,16 +47,16 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public void leaveCommentOnPost(Long postId, Long userId, String comment) {
-        postDao.leaveCommentOnPost(postId, userId, comment);
+    public void leaveCommentOnPost(CommentForPostsDto commentDto) {
+        postDao.leaveCommentOnPost(commentDto);
     }
 
     public void leaveLikeUnderPost(Long userId, Long postId) {
         postDao.leaveLikeUnderPost(userId, postId);
     }
 
-    public void deleteCommentOnPost(Long userId, Long postId, Long commentId) {
-        postDao.deleteCommentOnPost(userId, postId, commentId);
+    public void deleteCommentOnPost(CommentForPostsDto commentDto) {
+        postDao.deleteCommentOnPost(commentDto);
     }
 
     public void makePost(MultipartFile file, String description, Long userId) {

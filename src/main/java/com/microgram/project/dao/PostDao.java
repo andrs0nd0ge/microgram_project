@@ -1,5 +1,6 @@
 package com.microgram.project.dao;
 
+import com.microgram.project.dto.CommentForPostsDto;
 import com.microgram.project.entity.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -48,13 +49,21 @@ public class PostDao {
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class));
     }
 
-    public void leaveCommentOnPost(Long postId, Long userId, String comment) {
+    public void leaveCommentOnPost(CommentForPostsDto commentDto) {
+        long postId = commentDto.getPostId();
+        long userId = commentDto.getUserId();
+        String comment = commentDto.getComment();
+
         String sql = String.format("insert into comments (text, date, post_id, user_id) " +
                 "values ('%s', current_timestamp, %s, %s);", comment, postId, userId);
         jdbcTemplate.update(sql);
     }
 
-    public void deleteCommentOnPost(Long userId, Long postId, Long commentId) {
+    public void deleteCommentOnPost(CommentForPostsDto commentDto) {
+        long postId = commentDto.getPostId();
+        long userId = commentDto.getUserId();
+        long commentId = commentDto.getCommentId();
+
         String sql = String.format("delete from comments " +
                 "where id = (select * from comments as c " +
                 "left join posts as p on c.post_id = p.id " +

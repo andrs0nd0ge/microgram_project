@@ -291,7 +291,7 @@ function createPostElement(post) {
         commentTime.classList.add('text-secondary', 'border-start', 'ps-2', 'ms-2');
 
         commentContent.innerText = textarea.value;
-        commentAuthor.innerText = 'someUser';
+        commentAuthor.innerText = user.username;
         commentTime.innerText = new Date().toLocaleDateString('ru-RU', {
             hour: '2-digit',
             minute: '2-digit'
