@@ -4,6 +4,8 @@ const POSTS_URL = '/posts';
 
 const MAKE_POST = '/make-post';
 
+const COMMENT = '/comment';
+
 const postSection = document.createElement('div');
 
 function createPostSection() {
@@ -443,7 +445,7 @@ createPostUploadForm();
 
 document.getElementById('postUploadForm').addEventListener('submit', function (event) {
     event.preventDefault();
-    // executeAddingPost();
+    executeAddingPost();
 });
 
 function executeAddingPost() {
@@ -464,8 +466,10 @@ function executeAddingPost() {
             .then(function () {
                 console.log("Post was created successfully");
 
+                postIdCounter++;
+
                 const post = {
-                    id: postIdCounter++,
+                    id: postIdCounter,
                     imageName: image.name,
                     'description': description,
                     date: new Date().toLocaleDateString('ru-RU', {
@@ -498,5 +502,4 @@ function executeAddingPost() {
                 console.log(error.message);
             });
     }
-
 }
