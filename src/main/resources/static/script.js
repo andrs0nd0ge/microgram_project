@@ -259,6 +259,7 @@ function createPostElement(post) {
             </div>
         </div>
     `;
+
     const commentSection = document.createElement('div');
     const form = document.createElement('form');
     commentSection.prepend(form);
@@ -266,7 +267,7 @@ function createPostElement(post) {
     commentSection.classList.add('d-none');
     form.classList.add('card-body', 'd-none', 'border-top', 'border-primary-subtle');
 
-    form.innerHTML = `<textarea id="post${post.id}Textarea" cols="70"></textarea>` +
+    form.innerHTML = `<textarea class="border-secondary rounded" id="post${post.id}Textarea" cols="70"></textarea>` +
         `<input type="hidden" id="commentUserIdPost${post.id}" name="userId" value="1">` +
         `<input type="hidden" id="commentPostId${post.id}" name="postId" value="${post.id}">` +
         `<button id="commentSubmitPost${post.id}" type="submit" class="btn btn-primary ms-auto">Submit</button>`;
@@ -279,12 +280,24 @@ function createPostElement(post) {
         let textarea = document.getElementById(`post${post.id}Textarea`);
 
         const comment = document.createElement('div');
+        comment.classList.add('card-body', 'border-top', 'border-primary-subtle');
         const commentContent = document.createElement('p');
-        commentContent.classList.add('card-body', 'border-top', 'border-primary-subtle');
+        const commentAuthor = document.createElement('span');
+        const commentTime = document.createElement('span');
+        commentContent.classList.add('border-top', 'mt-2');
+        commentAuthor.classList.add('text-primary', 'pb-2');
+        commentTime.classList.add('text-secondary', 'border-start', 'ps-2', 'ms-2');
 
         commentContent.innerText = textarea.value;
+        commentAuthor.innerText = 'someUser';
+        commentTime.innerText = new Date().toLocaleDateString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
 
         comment.append(commentContent);
+        commentContent.before(commentAuthor);
+        commentAuthor.after(commentTime);
 
         commentSection.append(comment);
 
