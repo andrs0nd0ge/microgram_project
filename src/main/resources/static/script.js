@@ -259,15 +259,38 @@ function createPostElement(post) {
             </div>
         </div>
     `;
-    let commentSection = document.createElement('div');
-    let form = document.createElement('form');
+    const commentSection = document.createElement('div');
+    const form = document.createElement('form');
     commentSection.prepend(form);
     commentSection.setAttribute('id', `commentSection${post.id}`);
-    form.classList.add('card-body', 'd-none', 'border-bottom', 'border-primary-subtle');
-    form.innerHTML = `<textarea id=post${post.id}Textarea></textarea>` +
-        '<button type="submit" class="btn btn-primary ms-auto">Submit</button>';
-    let postDesc = document.getElementById(`post${post.id}Desc`);
-    postDesc.before(commentSection);
+    commentSection.classList.add('d-none');
+    form.classList.add('card-body', 'd-none', 'border-top', 'border-primary-subtle');
+
+    form.innerHTML = `<textarea id="post${post.id}Textarea" cols="70"></textarea>` +
+        `<input type="hidden" id="commentUserIdPost${post.id}" name="userId" value="1">` +
+        `<input type="hidden" id="commentPostId${post.id}" name="postId" value="${post.id}">` +
+        `<button id="commentSubmitPost${post.id}" type="submit" class="btn btn-primary ms-auto">Submit</button>`;
+    const postDesc = document.getElementById(`post${post.id}Desc`);
+    postDesc.after(commentSection);
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let textarea = document.getElementById(`post${post.id}Textarea`);
+
+        const comment = document.createElement('div');
+        const commentContent = document.createElement('p');
+        commentContent.classList.add('card-body', 'border-top', 'border-primary-subtle');
+
+        commentContent.innerText = textarea.value;
+
+        comment.append(commentContent);
+
+        commentSection.append(comment);
+
+        textarea.value = '';
+    });
+
     operatePost(post);
 }
 
@@ -313,9 +336,12 @@ function toggleBookmark(post) {
 function toggleCommentSection(post) {
     const commentSection = document.getElementById(`commentSection${post.id}`);
     const form = commentSection.querySelector('form');
-    if (form.classList.contains('d-flex')) {
+
+    if (commentSection.classList.contains('d-block') && form.classList.contains('d-flex')) {
+        commentSection.classList.replace('d-block', 'd-none');
         form.classList.replace('d-flex', 'd-none');
-    } else if (form.classList.contains('d-none')) {
+    } else if (commentSection.classList.contains('d-none') && form.classList.contains('d-none')) {
+        commentSection.classList.replace('d-none', 'd-block');
         form.classList.replace('d-none', 'd-flex');
     }
 }
@@ -362,6 +388,10 @@ document.getElementById('uploadForm').addEventListener('submit', function (event
     event.preventDefault();
     executeAddingPost();
 });
+
+function executeAddingComment() {
+
+}
 
 function executeAddingPost() {
     let description = document.getElementById('descText').value;
