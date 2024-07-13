@@ -64,11 +64,9 @@ public class PostDao {
         long userId = commentDto.getUserId();
         long commentId = commentDto.getCommentId();
 
-        String sql = String.format("delete from comments " +
-                "where id = (select * from comments as c " +
-                "left join posts as p on c.post_id = p.id " +
-                "left join users as u on p.user_id = u.id " +
-                "where p.user_id = %s and c.post_id = %s and c.id = %s);", userId, postId, commentId);
+        String sql = String.format("delete from comments as c " +
+                        "where c.id =  %s and c.post_id = %s and c.user_id = %s",
+                commentId, postId, userId);
         jdbcTemplate.update(sql);
     }
 

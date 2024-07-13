@@ -57,12 +57,7 @@ public class PostController {
     }
 
     @DeleteMapping("/comment")
-    public void deleteCommentOnPost(
-//            @RequestParam("id") Long userId,
-//            @PathVariable Long postId,
-//            @PathVariable Long commentId
-            @RequestBody CommentForPostsDto commentDto
-    ) {
+    public void deleteCommentOnPost(@RequestBody CommentForPostsDto commentDto) {
         postService.deleteCommentOnPost(commentDto);
     }
 
