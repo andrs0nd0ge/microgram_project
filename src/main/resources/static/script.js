@@ -264,6 +264,12 @@ function createPostElement(post) {
         </div>
     `;
 
+    createCommentSectionFor(post);
+
+    operatePost(post);
+}
+
+function createCommentSectionFor(post) {
     const commentSection = document.createElement('div');
     const form = document.createElement('form');
     commentSection.prepend(form);
@@ -271,9 +277,9 @@ function createPostElement(post) {
     commentSection.classList.add('d-none');
     form.classList.add('card-body', 'd-none', 'border-top', 'border-primary-subtle');
 
-    form.innerHTML = `<textarea class="border-secondary rounded" id="post${post.id}Textarea" cols="70"></textarea>` +
-        `<input type="hidden" id="commentUserIdPost${post.id}" name="userId" value="1">` +
-        `<input type="hidden" id="commentPostId${post.id}" name="postId" value="${post.id}">` +
+    form.innerHTML = `<textarea class="border-secondary rounded" id="post${post.id}Textarea" cols="70" name="comment"></textarea>` +
+        `<input type="hidden" id="commentUserIdPostId${post.id}" name="user_id" value="${user.id}">` +
+        `<input type="hidden" id="commentPostId${post.id}" name="post_id" value="${post.id}">` +
         `<button id="commentSubmitPost${post.id}" type="submit" class="btn btn-primary ms-auto">Submit</button>`;
     const postDesc = document.getElementById(`post${post.id}Desc`);
     postDesc.after(commentSection);
@@ -281,7 +287,7 @@ function createPostElement(post) {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        let textarea = document.getElementById(`post${post.id}Textarea`);
+        const textarea = document.getElementById(`post${post.id}Textarea`);
 
         const comment = document.createElement('div');
         comment.classList.add('card-body', 'border-top', 'border-primary-subtle');
@@ -292,7 +298,9 @@ function createPostElement(post) {
         commentAuthor.classList.add('text-primary', 'pb-2');
         commentTime.classList.add('text-secondary', 'border-start', 'ps-2', 'ms-2');
 
-        commentContent.innerText = textarea.value;
+        const commentValue = textarea.value;
+
+        commentContent.innerText = commentValue;
         commentAuthor.innerText = user.username;
         commentTime.innerText = new Date().toLocaleDateString('ru-RU', {
             hour: '2-digit',
@@ -305,17 +313,26 @@ function createPostElement(post) {
 
         commentSection.append(comment);
 
+        const userId = document.getElementById(`commentUserIdPostId${post.id}`).value;
+        const postId = document.getElementById(`commentPostId${post.id}`).value;
+
+        if (commentValue) {
+            axios.post(BASE_URL + POSTS_URL + COMMENT, {
+                user_id: userId,
+                post_id: postId,
+                comment: commentValue
+            })
+                .then(function (response) {
+                    console.log(response)
+                    console.log("Comment was created successfully")
+                })
+                .catch(function (error) {
+                    console.log(error)
+                });
+        }
+
         textarea.value = '';
     });
-
-    operatePost(post);
-}
-
-function test(post) {
-    let commentSection = document.getElementById(`commentSection${post.id}`);
-    if (commentSection) {
-
-    }
 }
 
 // function toggleCommentSection(post) {
@@ -399,11 +416,6 @@ function operatePost(post) {
 function addPost(postElement) {
     createPostElement(postElement);
     posts.push(postElement);
-}
-
-
-function executeAddingComment() {
-
 }
 
 function createPostUploadForm() {
@@ -502,4 +514,13 @@ function executeAddingPost() {
                 console.log(error.message);
             });
     }
+}
+
+function executeAddingCommentTo(post) {
+
+
+    //`<textarea class="border-secondary rounded" id="post${post.id}Textarea" cols="70"></textarea>` +
+    //`<input type="hidden" id="commentUserIdPostId${post.id}" name="userId" value="${user.id}">` +
+    //`<input type="hidden" id="commentPostId${post.id}" name="postId" value="${post.id}">` +
+    //`<button id="commentSubmitPost${post.id}" type="submit" class="btn btn-primary ms-auto">Submit</button>
 }
