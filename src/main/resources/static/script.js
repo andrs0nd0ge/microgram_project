@@ -101,48 +101,9 @@ const comment = {
 
 console.log(comment);
 
-// const secondComment = {
-//     id: 1,
-//     text: 'some other text',
-//     date: new Date().toLocaleDateString('ru-RU', {
-//         day: '2-digit',
-//         month: '2-digit',
-//         year: 'numeric'
-//     }),
-//     time: new Date().toLocaleTimeString('ru-RU', {
-//         hour: '2-digit',
-//         minute: '2-digit'
-//     }),
-//     post: secondPost,
-//     user: user
-// }
-
 const posts = [firstPost, secondPost, thirdPost];
 
-function setIdsForPosts() {
-    for (let i = 0; i < posts.length; i++) {
-        posts[i].id = i + 1;
-    }
-}
-
 console.log(posts);
-
-const post = {
-    id: 0,
-    imagePath: 'somepic.jpg',
-    description: 'some desc',
-    date: new Date().toLocaleDateString('ru-RU', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    }),
-    time: new Date().toLocaleTimeString('ru-RU', {
-        hour: '2-digit',
-        minute: '2-digit'
-    }),
-    user: user,
-    isLiked: false
-};
 
 function authorizeUser(user) {
     user.isAuthorised = true;
@@ -165,70 +126,12 @@ likePost(posts, 4);
 function hideSplashScreen() {
     const splashScreen = document.getElementById('bg');
     splashScreen.classList.toggle('d-none');
-    // const showSplash = document.getElementById('showSplash');
-    // showSplash.classList.remove('d-none');
-    // showOrHidePostSection();
-    // showOrHideCommentSection();
 }
 
 function showSplashScreen() {
     const splashScreen = document.getElementById('bg');
     splashScreen.classList.toggle('d-none');
-    // showOrHidePostSection();
-    // showOrHideCommentSection();
 }
-
-// function showOrHidePostSection() {
-    // const post = document.getElementById(`thisPost${post.id}`);
-// post.classList.toggle('d-none');
-// }
-
-// function showOrHideCommentSection() {
-//     const comment = document.getElementById(`commentSection${post.id}`);
-//     if (!comment.classList.contains('d-none')) {
-//         comment.classList.add('d-none');
-//     }
-// }
-
-// function createCommentSection(post) {
-//     let commentSection = document.createElement('div');
-//     post = document.getElementById(`postElement${post.id}`);
-//     commentSection.setAttribute('id', `commentSection${comment.post.id}`);
-//     post.append(commentSection);
-//     return commentSection;
-// }
-
-// function toggleCommentSection(comment) {
-//     const commentSection = document.getElementById(`commentSection${comment.post.id}`);
-//     commentSection.classList.toggle('d-none');
-// }
-
-function createCommentElement(comment, post) {
-    let postElement = document.getElementById(`postElement${post.id}`);
-    let commentSection = createCommentSection(post);
-    let commentElement = document.createElement('div');
-    commentElement.setAttribute('id', `commentElement${comment.post.id + comment.id}`);
-    commentElement.classList.add('d-flex', 'justify-content-center', 'mt-3', 'mb-3', 'd-none');
-    commentElement.innerHTML = `
-        <div class="card border-primary-subtle" style="width: 50rem;">
-            <div class="card-body">
-                <div class="d-flex">
-                    <span class="text-primary fs-5">${comment.user.username}</span>
-                    <span class="ms-auto text-secondary align-self-center border-start border-primary-subtle ps-2">${comment.date}, ${comment.time}</span>
-                </div>
-                <hr class="text-primary">
-                <p class="fs-5">${comment.text}</p>
-            </div>
-        </div>
-    `;
-    commentSection.append(commentElement);
-}
-
-// function createPost(post) {
-//     post.id = posts.length + 1;
-//     // ......
-//     posts.push(post);
-// }
 
 function createPostElement(post) {
     const postElement = document.createElement('div');
@@ -333,17 +236,6 @@ function createCommentSectionFor(post) {
 
         textarea.value = '';
     });
-}
-
-// function toggleCommentSection(post) {
-//
-// }
-
-function addComment(user, post) {
-    let comment = document.createElement('div');
-    comment.innerHTML = `<p></p>`;
-    let comSec = document.getElementById(`commentSection${post.id}`);
-    comSec.after(comment);
 }
 
 function toggleLike(post, like) {
@@ -514,13 +406,4 @@ function executeAddingPost() {
                 console.log(error.message);
             });
     }
-}
-
-function executeAddingCommentTo(post) {
-
-
-    //`<textarea class="border-secondary rounded" id="post${post.id}Textarea" cols="70"></textarea>` +
-    //`<input type="hidden" id="commentUserIdPostId${post.id}" name="userId" value="${user.id}">` +
-    //`<input type="hidden" id="commentPostId${post.id}" name="postId" value="${post.id}">` +
-    //`<button id="commentSubmitPost${post.id}" type="submit" class="btn btn-primary ms-auto">Submit</button>
 }
