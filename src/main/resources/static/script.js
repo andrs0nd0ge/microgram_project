@@ -220,16 +220,22 @@ function createCommentSectionFor(post) {
         const postId = document.getElementById(`commentPostId${post.id}`).value;
 
         if (commentValue) {
-            axios.post(BASE_URL + POSTS_URL + COMMENT, {
-                user_id: userId,
-                post_id: postId,
-                comment: commentValue
+            fetch(BASE_URL + POSTS_URL + COMMENT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    post_id: postId,
+                    comment: commentValue
+                })
             })
-                .then(function (response) {
-                    console.log(response)
+                .then(data => {
+                    console.log(data)
                     console.log("Comment was created successfully")
                 })
-                .catch(function (error) {
+                .catch(error => {
                     console.log(error)
                 });
         }
@@ -305,11 +311,6 @@ function operatePost(post) {
     });
 }
 
-function addPost(postElement) {
-    createPostElement(postElement);
-    posts.push(postElement);
-}
-
 function createPostUploadForm() {
     const form = document.createElement('form');
     form.classList.add('d-flex', 'mt-5', 'justify-content-center');
@@ -352,6 +353,11 @@ document.getElementById('postUploadForm').addEventListener('submit', function (e
     executeAddingPost();
 });
 
+function addPost(postElement) {
+    createPostElement(postElement);
+    posts.push(postElement);
+}
+
 function executeAddingPost() {
     const description = document.getElementById('descText').value;
     const image = document.getElementById('imageFile').files[0];
@@ -362,12 +368,11 @@ function executeAddingPost() {
         formData.append('desc', description);
         formData.append('id', userId);
 
-        axios.post(BASE_URL + POSTS_URL + MAKE_POST, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
+        fetch(BASE_URL + POSTS_URL + MAKE_POST, {
+            method: 'POST',
+            body: formData
         })
-            .then(function () {
+            .then(() => {
                 console.log("Post was created successfully");
 
                 postIdCounter++;
@@ -402,8 +407,8 @@ function executeAddingPost() {
 
                 console.log(post);
             })
-            .catch(function (error) {
-                console.log(error.message);
+            .catch(error => {
+                console.log(error);
             });
     }
 }
