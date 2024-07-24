@@ -43,7 +43,7 @@ public class PostController {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<List<PostDto>> getPostsOfFollowedUsers(Long userId) {
+    public ResponseEntity<List<PostDto>> getPostsOfFollowedUsers(@RequestParam Long userId) {
         List<PostDto> posts = postService.getPostsOfFollowedUsers(userId);
         if (posts.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);

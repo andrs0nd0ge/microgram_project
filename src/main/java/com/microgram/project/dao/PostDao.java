@@ -6,17 +6,19 @@ import com.microgram.project.util.PostUserRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class PostDao {
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedJdbcTemplate;
     public List<Post> getAllPosts() {
         String sql = "select p.id as post_id, p.image_name, p.description, p.date, " +
                 "u.id as user_id, u.name, u.username, u.email, u.password, u.post_qty, u.subs_qty, u.followers_qty " +
@@ -26,16 +28,26 @@ public class PostDao {
     }
 
     public List<Post> getPostsOfUser(Long userId) {
-        String sql = String.format("select * from posts where user_id = %s;", userId);
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class));
+        String sql = "select p.id as post_id, p.user_id, p.image_name, p.description, p.date, " +
+                "u.id as user_id, u.name, u.username, u.email, u.password, u.post_qty, u.subs_qty, u.followers_qty " +
+                "from posts p " +
+                "inner join users u on p.user_id = u.id " +
+                "where p.user_id = :userId";
+        return namedJdbcTemplate.query(sql, new MapSqlParameterSource()
+                        .addValue("userId", userId),
+                new PostUserRowMapper());
     }
 
     public List<Post> getPostsOfFollowedUsers(Long userId) {
-        String sql = String.format("select p.id, p.image, p.description, p.date, p.user_id from posts as p " +
-                "full join users as u on p.user_id = u.id " +
-                "full join subscriptions as s on u.id = s.subscribed_to_id " +
-                "where subscriber_id = %s;", userId);
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class));
+        String sql = "select p.id as post_id, p.user_id, p.image_name, p.description, p.date, " +
+                "u.id as user_id, u.name, u.username, u.email, u.password, u.post_qty, u.subs_qty, u.followers_qty " +
+                "from posts as p " +
+                "left join users as u on p.user_id = u.id " +
+                "left join subscriptions as s on u.id = s.subscribed_to_id " +
+                "where subscriber_id = :subscriberId";
+        return namedJdbcTemplate.query(sql, new MapSqlParameterSource()
+                        .addValue("subscriberId", userId),
+                new PostUserRowMapper());
     }
 
     public void updatePostsQty(Long userId) {
@@ -83,16 +95,17 @@ public class PostDao {
     public void makePost(MultipartFile file, String description, Long userId) throws IOException {
         String filename = file.getOriginalFilename();
         byte[] image = file.getBytes();
+
         String sql = "insert into posts (image, image_name, description, date, user_id) " +
-                "values (?, ?, ?, current_timestamp, ?)";
-        jdbcTemplate.update(con -> {
-            PreparedStatement statement = con.prepareStatement(sql);
-            statement.setBytes(1, image);
-            statement.setString(2, filename);
-            statement.setString(3, description);
-            statement.setLong(4, userId);
-            return statement;
-        });
+                "values (:image, :filename, :description, current_timestamp, :userId)";
+
+        namedJdbcTemplate.update(sql, new MapSqlParameterSource()
+                .addValue("image", image)
+                .addValue("filename", filename)
+                .addValue("description", description)
+                .addValue("userId", userId)
+        );
+
         updatePostsQty(userId);
     }
 

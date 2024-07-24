@@ -17,7 +17,6 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class PostDto {
     private String description;
-
     private Long id;
     @JsonProperty("image_name")
     private String imageName;
@@ -30,8 +29,8 @@ public class PostDto {
                 .id(post.getId())
                 .imageName(post.getImageName())
                 .description(post.getDescription())
-                .date(post.getDate().toLocalDate())
-                .time(post.getDate().toLocalTime())
+                .date(post.getDate() != null ? post.getDate().toLocalDate() : null)
+                .time(post.getDate() != null ? post.getDate().toLocalTime() : null)
                 .user(post.getUser())
                 .build();
     }
