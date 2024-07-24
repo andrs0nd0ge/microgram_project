@@ -1,7 +1,6 @@
 package com.microgram.project;
 
 import com.microgram.project.util.FileServiceImpl;
-import com.microgram.project.util.UtilityClass;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,9 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import javax.annotation.Resource;
 
 @SpringBootApplication
-public class ProjectApplication implements CommandLineRunner {
-	@Resource
-	FileServiceImpl fileService;
+public class Application implements CommandLineRunner {
+    @Resource
+    FileServiceImpl fileService;
 
 /*	FOR TESTING PURPOSES ONLY
 	Uncomment the code below if the tables don't exist or if test data is needed.
@@ -19,8 +18,8 @@ public class ProjectApplication implements CommandLineRunner {
 //		@Resource
 //		UtilityClass util;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProjectApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
 	}
 	@Override
 	public void run(String... args) {

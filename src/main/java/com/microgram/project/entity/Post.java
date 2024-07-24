@@ -13,5 +13,5 @@ public class Post {
     private String imageName;
     private String description;
     private LocalDateTime date;
-    private Long userId;
+    private User user;
 }

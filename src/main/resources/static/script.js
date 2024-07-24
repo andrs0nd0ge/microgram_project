@@ -32,7 +32,7 @@ console.log(user);
 
 const firstPost = {
     id: 1,
-    imageName: '1666156904606.jpg',
+    image_name: '1666156904606.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
         day: '2-digit',
@@ -49,7 +49,7 @@ const firstPost = {
 
 const secondPost = {
     id: 2,
-    imageName: 'somepic.jpg',
+    image_name: 'somepic.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
         day: '2-digit',
@@ -66,7 +66,7 @@ const secondPost = {
 
 const thirdPost = {
     id: 3,
-    imageName: 'somepic.jpg',
+    image_name: 'somepic.jpg',
     description: 'some desc',
     date: new Date().toLocaleDateString('ru-RU', {
         day: '2-digit',
@@ -101,9 +101,23 @@ const comment = {
 
 console.log(comment);
 
-const posts = [firstPost, secondPost, thirdPost];
+let posts;
 
-console.log(posts);
+fetchPosts();
+
+function fetchPosts() {
+    fetch(BASE_URL + POSTS_URL + '/main')
+        .then(response => response.json())
+        .then(data => {
+            posts = data
+        })
+        .then(() => {
+            for (let i = 0; i < posts.length; i++) {
+                addPost(posts[i]);
+            }
+        })
+        .catch(error => console.log(error));
+}
 
 function authorizeUser(user) {
     user.isAuthorised = true;
@@ -113,15 +127,15 @@ authorizeUser(user);
 
 console.log(user);
 
-function likePost(posts, postId) {
-    if (postId >= posts[0].id && postId <= posts.length) {
-        let currentPost = posts[postId - 1];
-        currentPost.isLiked = !currentPost.isLiked;
-        return currentPost;
-    }
-}
+// function likePost(posts, postId) {
+//     if (postId >= posts[0].id && postId <= posts.length) {
+//         let currentPost = posts[postId - 1];
+//         currentPost.isLiked = !currentPost.isLiked;
+//         return currentPost;
+//     }
+// }
 
-likePost(posts, 4);
+// likePost(posts, 4);
 
 function hideSplashScreen() {
     const splashScreen = document.getElementById('bg');
@@ -141,7 +155,7 @@ function createPostElement(post) {
     postElement.setAttribute('style', 'width: 50rem');
     postElement.innerHTML = `
         <div class="img-div" id="img-div${post.id}">
-            <img id="postImage${post.id}" src="../static/images/${post.imageName}" class="card-img-top" alt="...">
+            <img id="postImage${post.id}" src="../static/images/${post.image_name}" class="card-img-top" alt="...">
         </div>
         <div class="card-body border-bottom border-primary-subtle">
             <div class="d-flex">
@@ -355,7 +369,7 @@ document.getElementById('postUploadForm').addEventListener('submit', function (e
 
 function addPost(postElement) {
     createPostElement(postElement);
-    posts.push(postElement);
+    // posts.push(postElement);
 }
 
 function executeAddingPost() {
@@ -379,7 +393,7 @@ function executeAddingPost() {
 
                 const post = {
                     id: postIdCounter,
-                    imageName: image.name,
+                    image_name: image.name,
                     'description': description,
                     date: new Date().toLocaleDateString('ru-RU', {
                         day: '2-digit',

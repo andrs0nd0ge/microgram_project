@@ -2,6 +2,7 @@ package com.microgram.project.dao;
 
 import com.microgram.project.dto.CommentForPostsDto;
 import com.microgram.project.entity.Post;
+import com.microgram.project.util.PostUserRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,8 +18,11 @@ import java.util.List;
 public class PostDao {
     private final JdbcTemplate jdbcTemplate;
     public List<Post> getAllPosts() {
-        String sql = "select * from posts";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Post.class));
+        String sql = "select p.id as post_id, p.image_name, p.description, p.date, " +
+                "u.id as user_id, u.name, u.username, u.email, u.password, u.post_qty, u.subs_qty, u.followers_qty " +
+                "from posts p " +
+                "inner join users u on p.user_id = u.id";
+        return jdbcTemplate.query(sql, new PostUserRowMapper());
     }
 
     public List<Post> getPostsOfUser(Long userId) {
