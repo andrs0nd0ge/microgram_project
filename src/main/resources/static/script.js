@@ -188,24 +188,20 @@ function createPostElement(post) {
     operatePost(post);
 }
 
-function fetchCommentsFor(post, commentButtonPressed) {
+function fetchCommentsFor(post) {
     let comments;
 
-    if (commentButtonPressed) {
-        fetch(BASE_URL + COMMENTS_URL + `?post_id=${post.id}`)
-            .then(response => response.json())
-            .then(data => {
-                comments = data
-            })
-            .then(() => {
-                for (let i = 0; i < comments.length; i++) {
-                    addComment(post, comments[i]);
-                }
-            })
-            .catch(error => console.log(error));
-    } else {
-        comments = [];
-    }
+    fetch(BASE_URL + COMMENTS_URL + `?post_id=${post.id}`)
+        .then(response => response.json())
+        .then(data => {
+            comments = data
+        })
+        .then(() => {
+            for (let i = 0; i < comments.length; i++) {
+                addComment(post, comments[i]);
+            }
+        })
+        .catch(error => console.log(error));
 }
 
 function addComment(post, comment) {
@@ -214,7 +210,7 @@ function addComment(post, comment) {
 }
 
 function createCommentElement(post, comment) {
-    const commentSection = document.getElementById(`commentSection${post.id}`)
+    const commentSection = document.getElementById(`commentSection${post.id}`);
 
     const commentDiv = document.createElement('div');
     commentDiv.classList.add('card-body', 'border-top', 'border-primary-subtle');
@@ -236,7 +232,7 @@ function createCommentElement(post, comment) {
     commentContent.before(commentAuthor);
     commentAuthor.after(commentTime);
 
-    commentSection.append(commentDiv)
+    commentSection.append(commentDiv);
 }
 
 function createCommentSectionFor(post) {
@@ -299,11 +295,10 @@ function createCommentSectionFor(post) {
                 })
             })
                 .then(data => {
-                    console.log(data)
-                    console.log("Comment was created successfully")
+                    console.log(data);
                 })
                 .catch(error => {
-                    console.log(error)
+                    console.log(error);
                 });
         }
 
@@ -333,25 +328,19 @@ function toggleBookmark(post) {
 }
 
 function toggleCommentSection(post) {
-    let commentSectionIsToggled;
-
     const commentSection = document.getElementById(`commentSection${post.id}`);
     const form = commentSection.querySelector('form');
 
     if (commentSection.classList.contains('d-block') && form.classList.contains('d-flex')) {
-        commentSectionIsToggled = false;
-
         commentSection.classList.replace('d-block', 'd-none');
         form.classList.replace('d-flex', 'd-none');
 
-        fetchCommentsFor(post, commentSectionIsToggled);
+        commentSection.replaceChildren(commentSection.firstElementChild);
     } else if (commentSection.classList.contains('d-none') && form.classList.contains('d-none')) {
-        commentSectionIsToggled = true;
-
         commentSection.classList.replace('d-none', 'd-block');
         form.classList.replace('d-none', 'd-flex');
 
-        fetchCommentsFor(post, commentSectionIsToggled);
+        fetchCommentsFor(post);
     }
 }
 
