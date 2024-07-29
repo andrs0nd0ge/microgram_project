@@ -20,4 +20,11 @@ public class CommentService {
                 .map(CommentDto::from)
                 .collect(Collectors.toList());
     }
+
+    public List<CommentDto> getCommentsForPost(long postId) {
+        List<Comment> comments = commentDao.getCommentsForPost(postId);
+        return comments.stream()
+                .map(CommentDto::from)
+                .collect(Collectors.toList());
+    }
 }

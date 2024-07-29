@@ -5,6 +5,7 @@ import com.microgram.project.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -14,8 +15,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
+
     @GetMapping
     public List<CommentDto> getAllComments() {
         return commentService.getAllComments();
+    }
+
+    @GetMapping(params = "post_id")
+    public List<CommentDto> getCommentsForPost(@RequestParam(name = "post_id") long postId) {
+        return commentService.getCommentsForPost(postId);
     }
 }

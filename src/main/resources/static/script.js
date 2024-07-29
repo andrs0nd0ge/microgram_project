@@ -103,8 +103,6 @@ console.log(comment);
 
 let posts;
 
-fetchPosts();
-
 function fetchPosts() {
     fetch(BASE_URL + POSTS_URL + '/main')
         .then(response => response.json())
@@ -118,6 +116,8 @@ function fetchPosts() {
         })
         .catch(error => console.log(error));
 }
+
+fetchPosts();
 
 function authorizeUser(user) {
     user.isAuthorised = true;
@@ -186,6 +186,52 @@ function createPostElement(post) {
     operatePost(post);
 }
 
+function createCommentElement(post) {
+    const textarea = document.getElementById(`post${post.id}Textarea`);
+
+    const commentDiv = document.createElement('div');
+    commentDiv.classList.add('card-body', 'border-top', 'border-primary-subtle');
+    const commentContent = document.createElement('p');
+    const commentAuthor = document.createElement('span');
+    const commentTime = document.createElement('span');
+    commentContent.classList.add('border-top', 'mt-2');
+    commentAuthor.classList.add('text-primary', 'pb-2');
+    commentTime.classList.add('text-secondary', 'border-start', 'ps-2', 'ms-2');
+
+    commentContent.innerText = textarea.value;
+    commentAuthor.innerText = user.username;
+    commentTime.innerText = new Date().toLocaleDateString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    commentDiv.append(commentContent);
+    commentContent.before(commentAuthor);
+    commentAuthor.after(commentTime);
+
+    const comment = {
+        text: textarea.value,
+        date: new Date().toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }),
+        time: new Date().toLocaleTimeString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit'
+        }),
+        post: post,
+        user: {
+            id: userId,
+            name: 'First',
+            username: 'first',
+            email: 'onetest@test',
+            password: '123',
+            isAuthorised: false
+        },
+    };
+}
+
 function createCommentSectionFor(post) {
     const commentSection = document.createElement('div');
     const form = document.createElement('form');
@@ -206,27 +252,27 @@ function createCommentSectionFor(post) {
 
         const textarea = document.getElementById(`post${post.id}Textarea`);
 
-        const comment = document.createElement('div');
-        comment.classList.add('card-body', 'border-top', 'border-primary-subtle');
-        const commentContent = document.createElement('p');
-        const commentAuthor = document.createElement('span');
-        const commentTime = document.createElement('span');
-        commentContent.classList.add('border-top', 'mt-2');
-        commentAuthor.classList.add('text-primary', 'pb-2');
-        commentTime.classList.add('text-secondary', 'border-start', 'ps-2', 'ms-2');
-
-        const commentValue = textarea.value;
-
-        commentContent.innerText = commentValue;
-        commentAuthor.innerText = user.username;
-        commentTime.innerText = new Date().toLocaleDateString('ru-RU', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-
-        comment.append(commentContent);
-        commentContent.before(commentAuthor);
-        commentAuthor.after(commentTime);
+        // const comment = document.createElement('div');
+        // comment.classList.add('card-body', 'border-top', 'border-primary-subtle');
+        // const commentContent = document.createElement('p');
+        // const commentAuthor = document.createElement('span');
+        // const commentTime = document.createElement('span');
+        // commentContent.classList.add('border-top', 'mt-2');
+        // commentAuthor.classList.add('text-primary', 'pb-2');
+        // commentTime.classList.add('text-secondary', 'border-start', 'ps-2', 'ms-2');
+        //
+        // const commentValue = textarea.value;
+        //
+        // commentContent.innerText = commentValue;
+        // commentAuthor.innerText = user.username;
+        // commentTime.innerText = new Date().toLocaleDateString('ru-RU', {
+        //     hour: '2-digit',
+        //     minute: '2-digit'
+        // });
+        //
+        // comment.append(commentContent);
+        // commentContent.before(commentAuthor);
+        // commentAuthor.after(commentTime);
 
         commentSection.append(comment);
 
