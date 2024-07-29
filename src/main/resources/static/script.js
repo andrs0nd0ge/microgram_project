@@ -114,7 +114,6 @@ function fetchPosts() {
         .then(() => {
             for (let i = 0; i < posts.length; i++) {
                 addPost(posts[i]);
-                fetchCommentsFor(posts[i]);
             }
         })
         .catch(error => console.log(error));
@@ -189,24 +188,29 @@ function createPostElement(post) {
     operatePost(post);
 }
 
-function fetchCommentsFor(post) {
+function fetchCommentsFor(post, commentButtonPressed) {
     let comments;
 
-    fetch(BASE_URL + COMMENTS_URL + `?post_id=${post.id}`)
-        .then(response => response.json())
-        .then(data => {
-            comments = data
-        })
-        .then(() => {
-            for (let i = 0; i < comments.length; i++) {
-                addComment(post, comments[i]);
-            }
-        })
-        .catch(error => console.log(error));
+    if (commentButtonPressed) {
+        fetch(BASE_URL + COMMENTS_URL + `?post_id=${post.id}`)
+            .then(response => response.json())
+            .then(data => {
+                comments = data
+            })
+            .then(() => {
+                for (let i = 0; i < comments.length; i++) {
+                    addComment(post, comments[i]);
+                }
+            })
+            .catch(error => console.log(error));
+    } else {
+        comments = [];
+    }
 }
 
 function addComment(post, comment) {
     createCommentElement(post, comment);
+    // comments.push(comment);
 }
 
 function createCommentElement(post, comment) {
@@ -329,15 +333,25 @@ function toggleBookmark(post) {
 }
 
 function toggleCommentSection(post) {
+    let commentSectionIsToggled;
+
     const commentSection = document.getElementById(`commentSection${post.id}`);
     const form = commentSection.querySelector('form');
 
     if (commentSection.classList.contains('d-block') && form.classList.contains('d-flex')) {
+        commentSectionIsToggled = false;
+
         commentSection.classList.replace('d-block', 'd-none');
         form.classList.replace('d-flex', 'd-none');
+
+        fetchCommentsFor(post, commentSectionIsToggled);
     } else if (commentSection.classList.contains('d-none') && form.classList.contains('d-none')) {
+        commentSectionIsToggled = true;
+
         commentSection.classList.replace('d-none', 'd-block');
         form.classList.replace('d-none', 'd-flex');
+
+        fetchCommentsFor(post, commentSectionIsToggled);
     }
 }
 
