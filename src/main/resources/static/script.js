@@ -1,5 +1,7 @@
 const BASE_URL = 'http://localhost:8080';
 
+const COMMENTS_URL = '/comments';
+
 const POSTS_URL = '/posts';
 
 const MAKE_POST = '/make-post';
@@ -112,6 +114,7 @@ function fetchPosts() {
         .then(() => {
             for (let i = 0; i < posts.length; i++) {
                 addPost(posts[i]);
+                fetchCommentsFor(posts[i]);
             }
         })
         .catch(error => console.log(error));
@@ -186,8 +189,28 @@ function createPostElement(post) {
     operatePost(post);
 }
 
-function createCommentElement(post) {
-    const textarea = document.getElementById(`post${post.id}Textarea`);
+function fetchCommentsFor(post) {
+    let comments;
+
+    fetch(BASE_URL + COMMENTS_URL + `?post_id=${post.id}`)
+        .then(response => response.json())
+        .then(data => {
+            comments = data
+        })
+        .then(() => {
+            for (let i = 0; i < comments.length; i++) {
+                addComment(post, comments[i]);
+            }
+        })
+        .catch(error => console.log(error));
+}
+
+function addComment(post, comment) {
+    createCommentElement(post, comment);
+}
+
+function createCommentElement(post, comment) {
+    const commentSection = document.getElementById(`commentSection${post.id}`)
 
     const commentDiv = document.createElement('div');
     commentDiv.classList.add('card-body', 'border-top', 'border-primary-subtle');
@@ -198,9 +221,9 @@ function createCommentElement(post) {
     commentAuthor.classList.add('text-primary', 'pb-2');
     commentTime.classList.add('text-secondary', 'border-start', 'ps-2', 'ms-2');
 
-    commentContent.innerText = textarea.value;
-    commentAuthor.innerText = user.username;
-    commentTime.innerText = new Date().toLocaleDateString('ru-RU', {
+    commentContent.innerText = comment.text;
+    commentAuthor.innerText = comment.user.username;
+    commentTime.innerText = new Date(comment.date).toLocaleDateString('ru-RU', {
         hour: '2-digit',
         minute: '2-digit'
     });
@@ -209,27 +232,7 @@ function createCommentElement(post) {
     commentContent.before(commentAuthor);
     commentAuthor.after(commentTime);
 
-    const comment = {
-        text: textarea.value,
-        date: new Date().toLocaleDateString('ru-RU', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        }),
-        time: new Date().toLocaleTimeString('ru-RU', {
-            hour: '2-digit',
-            minute: '2-digit'
-        }),
-        post: post,
-        user: {
-            id: userId,
-            name: 'First',
-            username: 'first',
-            email: 'onetest@test',
-            password: '123',
-            isAuthorised: false
-        },
-    };
+    commentSection.append(commentDiv)
 }
 
 function createCommentSectionFor(post) {
@@ -252,27 +255,27 @@ function createCommentSectionFor(post) {
 
         const textarea = document.getElementById(`post${post.id}Textarea`);
 
-        // const comment = document.createElement('div');
-        // comment.classList.add('card-body', 'border-top', 'border-primary-subtle');
-        // const commentContent = document.createElement('p');
-        // const commentAuthor = document.createElement('span');
-        // const commentTime = document.createElement('span');
-        // commentContent.classList.add('border-top', 'mt-2');
-        // commentAuthor.classList.add('text-primary', 'pb-2');
-        // commentTime.classList.add('text-secondary', 'border-start', 'ps-2', 'ms-2');
-        //
-        // const commentValue = textarea.value;
-        //
-        // commentContent.innerText = commentValue;
-        // commentAuthor.innerText = user.username;
-        // commentTime.innerText = new Date().toLocaleDateString('ru-RU', {
-        //     hour: '2-digit',
-        //     minute: '2-digit'
-        // });
-        //
-        // comment.append(commentContent);
-        // commentContent.before(commentAuthor);
-        // commentAuthor.after(commentTime);
+        const comment = document.createElement('div');
+        comment.classList.add('card-body', 'border-top', 'border-primary-subtle');
+        const commentContent = document.createElement('p');
+        const commentAuthor = document.createElement('span');
+        const commentTime = document.createElement('span');
+        commentContent.classList.add('border-top', 'mt-2');
+        commentAuthor.classList.add('text-primary', 'pb-2');
+        commentTime.classList.add('text-secondary', 'border-start', 'ps-2', 'ms-2');
+
+        const commentValue = textarea.value;
+
+        commentContent.innerText = commentValue;
+        commentAuthor.innerText = user.username;
+        commentTime.innerText = new Date().toLocaleDateString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        comment.append(commentContent);
+        commentContent.before(commentAuthor);
+        commentAuthor.after(commentTime);
 
         commentSection.append(comment);
 

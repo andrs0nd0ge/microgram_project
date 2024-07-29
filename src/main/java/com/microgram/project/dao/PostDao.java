@@ -2,7 +2,7 @@ package com.microgram.project.dao;
 
 import com.microgram.project.dto.CommentForPostsDto;
 import com.microgram.project.entity.Post;
-import com.microgram.project.util.PostUserRowMapper;
+import com.microgram.project.mappers.PostUserRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
