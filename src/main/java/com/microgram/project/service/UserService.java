@@ -66,7 +66,6 @@ public class UserService {
                 System.out.println("User already exists");
             } else {
                 userDao.registerUser(name, username, email, password);
-                System.out.println("User was registered successfully");
             }
             break;
         }
