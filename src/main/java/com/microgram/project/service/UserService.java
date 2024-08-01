@@ -1,6 +1,7 @@
 package com.microgram.project.service;
 
 import com.microgram.project.dao.UserDao;
+import com.microgram.project.dto.RegistrationDto;
 import com.microgram.project.dto.UserDto;
 import com.microgram.project.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -43,24 +44,24 @@ public class UserService {
         return null;
     }
 
-    public String findUserByEmail(String email) {
+    public boolean findUserByEmail(String email) {
         User user = userDao.checkIfUserExistsByEmail(email).orElse(null);
-        if (user != null) {
-            return "User was found";
-        }
-        return "User was not found";
+        return user != null;
     }
 
-    public String findUserByUsername(String username) {
+    public boolean findUserByUsername(String username) {
         User user = userDao.checkIfUserExistsByUsername(username).orElse(null);
-        if (user != null) {
-            return "User was found";
-        }
-        return "User was not found";
+        return user != null;
     }
 
-    public void registerUser(String name, String username, String email, String password) {
+    public void registerUser(RegistrationDto registrationDto) {
+        String name = registrationDto.getName();
+        String username = registrationDto.getUsername();
+        String email = registrationDto.getEmail().trim();
+        String password = registrationDto.getPassword();
+
         List<User> users = userDao.getAllUsers();
+
         for (User user : users) {
             if (user.getUsername().equals(username) || user.getEmail().equals(email)) {
                 System.out.println("User already exists");

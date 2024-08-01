@@ -1,5 +1,6 @@
 package com.microgram.project.controller;
 
+import com.microgram.project.dto.RegistrationDto;
 import com.microgram.project.dto.UserDto;
 import com.microgram.project.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -47,20 +48,29 @@ public class UserController {
     }
 
     @GetMapping("/check_mail/{email}")
-    public ResponseEntity<String> userExistsByEmail(@PathVariable String email) {
-        return new ResponseEntity<>(userService.findUserByEmail(email), HttpStatus.OK);
+    public ResponseEntity<Boolean> userExistsByEmail(@PathVariable String email) {
+        boolean userWasFound = userService.findUserByEmail(email);
+
+        if (userWasFound) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/check_username/{username}")
-    public ResponseEntity<String> userExistsByUsername(@PathVariable String username) {
-        return new ResponseEntity<>(userService.findUserByUsername(username), HttpStatus.OK);
+    public ResponseEntity<Boolean> userExistsByUsername(@PathVariable String username) {
+        boolean userWasFound = userService.findUserByUsername(username);
+
+        if (userWasFound) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/register")
-    public void registerUser(@RequestParam String name,
-                             @RequestParam String username,
-                             @RequestParam String email,
-                             @RequestParam String password) {
-        userService.registerUser(name, username, email.toLowerCase().trim(), password);
+    public void registerUser(@RequestBody RegistrationDto registrationDto) {
+        userService.registerUser(registrationDto);
     }
 }

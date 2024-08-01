@@ -139,14 +139,14 @@ console.log(user);
 
 // likePost(posts, 4);
 
-function hideSplashScreen() {
+function toggleSplashScreen() {
     const splashScreen = document.getElementById('bg');
-    splashScreen.classList.toggle('d-none');
-}
 
-function showSplashScreen() {
-    const splashScreen = document.getElementById('bg');
-    splashScreen.classList.toggle('d-none');
+    if (splashScreen.classList.contains('d-flex')) {
+        splashScreen.classList.replace('d-flex', 'd-none');
+    } else if (splashScreen.classList.contains('d-none')) {
+        splashScreen.classList.replace('d-none', 'd-flex');
+    }
 }
 
 function createPostElement(post) {
@@ -405,6 +405,7 @@ function createPostUploadForm() {
 
     const submitBtn = document.createElement('button');
     submitBtn.setAttribute('type', 'submit');
+    submitBtn.classList.add('btn', 'border-primary', 'rounded-start-0');
     submitBtn.innerText = 'Make Post';
     form.append(submitBtn);
 
