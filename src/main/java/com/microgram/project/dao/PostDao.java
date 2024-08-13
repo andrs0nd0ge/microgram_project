@@ -56,7 +56,7 @@ public class PostDao {
                 "where u.id = :userId " +
                 "group by u.id) " +
                 "where id = :userId";
-        jdbcTemplate.update(sql, new MapSqlParameterSource()
+        namedJdbcTemplate.update(sql, new MapSqlParameterSource()
                 .addValue("userId", userId));
     }
 

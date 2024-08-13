@@ -8,6 +8,10 @@ const MAKE_POST = '/make-post';
 
 const COMMENT = '/comment';
 
+const USERS_URL = '/users';
+
+const REGISTER_URL = '/register';
+
 const postSection = document.createElement('div');
 
 function createPostSection() {
@@ -478,4 +482,40 @@ function executeAddingPost() {
                 console.log(error);
             });
     }
+}
+
+document.getElementById('registration-form').addEventListener('submit', registerUser);
+
+function registerUser(event) {
+    event.preventDefault();
+
+    const registrationForm = document.getElementById('registration-form');
+
+    const name = document.getElementById('nameInput').value;
+    const username = document.getElementById('usernameInput').value;
+    const email = document.getElementById('emailInput').value;
+    const password = document.getElementById('passwordInput').value;
+
+    fetch(BASE_URL + USERS_URL + REGISTER_URL, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: name,
+            username: username,
+            email: email,
+            password: password
+        })
+    })
+        .then(() => {
+            console.log('User was registered successfully');
+
+            registrationForm.reset();
+        })
+        .catch(error => {
+            console.log(error);
+        });
 }
