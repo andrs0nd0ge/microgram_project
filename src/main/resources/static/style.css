@@ -35,7 +35,7 @@ p {
     margin-bottom: 0;
 }
 
-.registration-header {
+.user-form-header {
     font-size: 32px;
     font-weight: 300;
     color: #4c4c4c;
@@ -44,11 +44,11 @@ p {
     margin-bottom: 10px;
 }
 
-.registration-form > * {
+.user-form > * {
     margin: 10px 0;
 }
 
-.registration-box {
+.user-form-box {
     position: absolute;
     top: 50%;
     left: 50%;

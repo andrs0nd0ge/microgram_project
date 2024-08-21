@@ -143,9 +143,26 @@ console.log(user);
 
 // likePost(posts, 4);
 
-function toggleSplashScreen() {
-    const splashScreen = document.getElementById('bg');
+const registerSplashScreen = document.getElementById('register-bg');
 
+const registerButton = document.getElementById('register-btn');
+const registerCloseButton = document.getElementById('registration-form-close-btn');
+
+registerButton.addEventListener('click', () => toggleSplashScreen(registerSplashScreen));
+
+registerCloseButton.addEventListener('click', () => toggleSplashScreen(registerSplashScreen));
+
+
+const loginSplashScreen = document.getElementById('login-bg');
+
+const loginButton = document.getElementById('login-btn');
+const loginCloseButton = document.getElementById('login-form-close-btn');
+
+loginButton.addEventListener('click', () => toggleSplashScreen(loginSplashScreen));
+
+loginCloseButton.addEventListener('click', () => toggleSplashScreen(loginSplashScreen));
+
+function toggleSplashScreen(splashScreen) {
     if (splashScreen.classList.contains('d-flex')) {
         splashScreen.classList.replace('d-flex', 'd-none');
     } else if (splashScreen.classList.contains('d-none')) {
