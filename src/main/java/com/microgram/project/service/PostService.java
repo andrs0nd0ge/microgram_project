@@ -4,9 +4,11 @@ import com.microgram.project.dao.PostDao;
 import com.microgram.project.dto.CommentForPostsDto;
 import com.microgram.project.dto.PostDto;
 import com.microgram.project.entity.Post;
+import com.microgram.project.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,14 +35,28 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public List<PostDto> getPostsOfFollowedUsers(Long id) {
-        List<Post> posts = postDao.getPostsOfFollowedUsers(id);
+    public List<PostDto> getPostsOfFollowedUsers(Authentication auth) {
+        User user = (User) auth.getPrincipal();
+
+        long userId = 0L;
+        if (user != null) {
+            userId = user.getId();
+        }
+
+        List<Post> posts = postDao.getPostsOfFollowedUsers(userId);
         return posts.stream()
                 .map(PostDto::from)
                 .collect(Collectors.toList());
     }
 
-    public List<PostDto> getPostsOfOtherUsers(Long id) {
+    public List<PostDto> getPostsOfOtherUsers(Authentication auth) {
+        User user = (User) auth.getPrincipal();
+
+        long id = 0L;
+        if (user != null) {
+            id = user.getId();
+        }
+
         List<Post> posts = postDao.getPostsOfOtherUsers(id);
         return posts.stream()
                 .map(PostDto::from)
@@ -51,7 +67,14 @@ public class PostService {
         postDao.leaveCommentOnPost(commentDto);
     }
 
-    public void leaveLikeUnderPost(Long userId, Long postId) {
+    public void leaveLikeUnderPost(Authentication auth, Long postId) {
+        User user = (User) auth.getPrincipal();
+
+        long userId = 0L;
+        if (user != null) {
+            userId = user.getId();
+        }
+
         postDao.leaveLikeUnderPost(userId, postId);
     }
 
@@ -59,15 +82,29 @@ public class PostService {
         postDao.deleteCommentOnPost(commentDto);
     }
 
-    public void makePost(MultipartFile file, String description, Long userId) {
+    public void makePost(MultipartFile file, String description, Authentication auth) {
         try {
+            User user = (User) auth.getPrincipal();
+
+            long userId = 0L;
+            if (user != null) {
+                userId = user.getId();
+            }
+
             postDao.makePost(file, description, userId);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void deletePost(Long userId, Long postId) {
+    public void deletePost(Authentication auth, Long postId) {
+        User user = (User) auth.getPrincipal();
+
+        long userId = 0L;
+        if (user != null) {
+            userId = user.getId();
+        }
+
         postDao.deletePost(userId, postId);
     }
 
@@ -80,7 +117,14 @@ public class PostService {
         }
     }
 
-    public void unlikePost(Long userId, Long postId) {
+    public void unlikePost(Authentication auth, Long postId) {
+        User user = (User) auth.getPrincipal();
+
+        long userId = 0L;
+        if (user != null) {
+            userId = user.getId();
+        }
+
         postDao.unlikePost(userId, postId);
     }
 }

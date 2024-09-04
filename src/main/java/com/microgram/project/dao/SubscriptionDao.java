@@ -16,14 +16,14 @@ public class SubscriptionDao {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     public List<Subscription> getAllSubscriptions() {
-        String sql = "select * from subscriptions";
+        String sql = "select * from microgram.subscriptions";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Subscription.class));
     }
 
     public void updateSubsQty(Long userId) {
-        String sql = "update users set subs_qty = " +
+        String sql = "update microgram.users set subs_qty = " +
                 "(select count(subscriber_id) from users as u " +
-                "    left join subscriptions s on u.id = s.subscriber_id " +
+                "    left join microgram.subscriptions s on u.id = s.subscriber_id " +
                 "    where u.id = :userId " +
                 "    group by u.id) " +
                 "where id = :userId";
@@ -32,9 +32,9 @@ public class SubscriptionDao {
     }
 
     public void updateFollowersQty(Long userId) {
-        String sql = "update users set followers_qty = " +
+        String sql = "update microgram.users set followers_qty = " +
                 "(select count(subscribed_to_id) from users as u " +
-                "    left join subscriptions s on u.id = s.subscribed_to_id " +
+                "    left join microgram.subscriptions s on u.id = s.subscribed_to_id " +
                 "    where u.id = :userId " +
                 "    group by u.id) " +
                 "where id = :userId";
@@ -43,7 +43,7 @@ public class SubscriptionDao {
     }
 
     public void subscribe(Long subscriberId, Long subscribedToId) {
-        String sql = "insert into subscriptions(subscriber_id, subscribed_to_id, date) " +
+        String sql = "insert into microgram.subscriptions(subscriber_id, subscribed_to_id, date) " +
                 "values (:subId, :subbedToId, current_date)";
         namedJdbcTemplate.update(sql, new MapSqlParameterSource()
                 .addValue("subId", subscriberId)
@@ -53,7 +53,7 @@ public class SubscriptionDao {
     }
 
     public void unsubscribe(Long subscriberId, Long subscribedToId) {
-        String sql = "delete from subscriptions " +
+        String sql = "delete from microgram.subscriptions " +
                 "where subscriber_id = :subId and subscribed_to_id = :subbedToId";
         namedJdbcTemplate.update(sql, new MapSqlParameterSource()
                 .addValue("subId", subscriberId)

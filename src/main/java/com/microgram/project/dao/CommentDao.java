@@ -20,9 +20,9 @@ public class CommentDao {
         String sql = "select c.id as comment_id, c.text, c.date as comment_date, " +
                 "p.id as post_id, p.image_name, p.description, p.date as post_date, " +
                 "u.id as user_id, u.name, u.username, u.email " +
-                "from comments as c " +
-                "inner join posts as p on c.post_id = p.id " +
-                "inner join users as u on c.user_id = u.id";
+                "from microgram.comments as c " +
+                "inner join microgram.posts as p on c.post_id = p.id " +
+                "inner join microgram.users as u on c.user_id = u.id";
         return jdbcTemplate.query(sql, new CommentPostUserRowMapper());
     }
 
@@ -30,9 +30,9 @@ public class CommentDao {
         String sql = "select c.id as comment_id, c.text, c.date as comment_date, " +
                 "p.id as post_id, p.image_name, p.description, p.date as post_date, " +
                 "u.id as user_id, u.name, u.username, u.email " +
-                "from comments as c " +
-                "inner join posts as p on c.post_id = p.id " +
-                "inner join users as u on c.user_id = u.id " +
+                "from microgram.comments as c " +
+                "inner join microgram.posts as p on c.post_id = p.id " +
+                "inner join microgram.users as u on c.user_id = u.id " +
                 "where c.post_id = :postId";
 
         return namedJdbcTemplate.query(sql, new MapSqlParameterSource()

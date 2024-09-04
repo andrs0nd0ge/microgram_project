@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,7 @@ public class PostController {
     public List<PostDto> getPosts() {
         return postService.getAllPosts();
     }
+
     @GetMapping("/{userId}")
     public ResponseEntity<List<PostDto>> getPostsOfUser(@PathVariable Long userId) {
         List<PostDto> posts = postService.getPostsOfUser(userId);
@@ -33,9 +35,10 @@ public class PostController {
         }
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
+
     @GetMapping
-    public ResponseEntity<List<PostDto>> getPostsOfOtherUsers(Long userId) {
-        List<PostDto> posts = postService.getPostsOfOtherUsers(userId);
+    public ResponseEntity<List<PostDto>> getPostsOfOtherUsers(Authentication auth) {
+        List<PostDto> posts = postService.getPostsOfOtherUsers(auth);
         if (posts.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
@@ -43,8 +46,8 @@ public class PostController {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<List<PostDto>> getPostsOfFollowedUsers(@RequestParam Long userId) {
-        List<PostDto> posts = postService.getPostsOfFollowedUsers(userId);
+    public ResponseEntity<List<PostDto>> getPostsOfFollowedUsers(Authentication auth) {
+        List<PostDto> posts = postService.getPostsOfFollowedUsers(auth);
         if (posts.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
@@ -62,26 +65,26 @@ public class PostController {
     }
 
     @GetMapping("/like/{postId}")
-    public void leaveLikeUnderPost(@RequestParam("id") Long userId, @PathVariable Long postId) {
-        postService.leaveLikeUnderPost(userId, postId);
+    public void leaveLikeUnderPost(Authentication auth, @PathVariable Long postId) {
+        postService.leaveLikeUnderPost(auth, postId);
     }
 
     @DeleteMapping("/unlike/{postId}")
-    public void unlikePost(@RequestParam("id") Long userId, @PathVariable Long postId) {
-        postService.unlikePost(userId, postId);
+    public void unlikePost(Authentication auth, @PathVariable Long postId) {
+        postService.unlikePost(auth, postId);
     }
 
     @PostMapping("/make-post")
     public void makePost(@RequestParam("imageFile") MultipartFile file,
                          @RequestParam("desc") String description,
-                         @RequestParam("id") Long userId) {
-        postService.makePost(file, description, userId);
+                         Authentication auth) {
+        postService.makePost(file, description, auth);
         fileService.save(file);
     }
 
     @DeleteMapping("/post/{postId}")
-    public void deletePost(@RequestParam("id") Long userId, @PathVariable Long postId) {
-        postService.deletePost(userId, postId);
+    public void deletePost(Authentication auth, @PathVariable Long postId) {
+        postService.deletePost(auth, postId);
     }
 
     @GetMapping("/image/{postId}")

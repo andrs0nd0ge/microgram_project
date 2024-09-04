@@ -1,46 +1,12 @@
 package com.microgram.project;
 
-import com.microgram.project.util.FileServiceImpl;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import javax.annotation.Resource;
-
 @SpringBootApplication
-public class Application implements CommandLineRunner {
-    @Resource
-    FileServiceImpl fileService;
-
-/*	FOR TESTING PURPOSES ONLY
-	Uncomment the code below if the tables don't exist or if test data is needed.
- */
-//		@Resource
-//		UtilityClass util;
+public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-	}
-	@Override
-	public void run(String... args) {
-		fileService.init();
-		/* FOR TESTING PURPOSES ONLY
-			Uncomment the code below if the tables don't exist
-		*/
-//			util.createUsersTable();
-//			util.createPostsTable();
-//			util.createCommentsTable();
-//			util.createLikesTable();
-//			util.createSubscriptionsTable();
-
-		/* FOR TESTING PURPOSES ONLY
-			Uncomment the code below if test data is needed
-		*/
-//			util.insertIntoUsers();
-//			util.insertIntoPosts();
-//			util.insertIntoComments();
-//			util.insertIntoLikes();
-//			util.insertIntoSubs();
-//			util.updateUsers();
-	}
+    }
 }

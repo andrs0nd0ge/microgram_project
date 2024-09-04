@@ -17,11 +17,11 @@ public class UserDao {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     public List<User> getAllUsers() {
-        String sql = "select * from users";
+        String sql = "select * from microgram.users";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
     public Optional<User> getUserByUsername(String username) {
-        String sql = "select * from users where lower(username) like concat('%', lower(:username), '%')";
+        String sql = "select * from microgram.users where lower(username) like concat('%', lower(:username), '%')";
         return namedJdbcTemplate.query(sql,
                         new MapSqlParameterSource().addValue("username", username),
                         new BeanPropertyRowMapper<>(User.class))
@@ -29,14 +29,14 @@ public class UserDao {
                 .findFirst();
     }
     public List<User> getUsersByName(String name) {
-        String sql = "select * from users where lower(name) like concat('%', lower(:name), '%')";
+        String sql = "select * from microgram.users where lower(name) like concat('%', lower(:name), '%')";
         return namedJdbcTemplate.query(sql,
                 new MapSqlParameterSource().addValue("name", name),
                 new BeanPropertyRowMapper<>(User.class));
     }
 
     public Optional<User> getUserByEmail(String email) {
-        String sql = "select * from users where lower(email) like lower('%', lower(:email) '%')";
+        String sql = "select * from microgram.users where lower(email) like lower('%', lower(:email) '%')";
         return namedJdbcTemplate.query(sql,
                         new MapSqlParameterSource().addValue("email", email),
                         new BeanPropertyRowMapper<>(User.class))
@@ -45,7 +45,7 @@ public class UserDao {
     }
 
     public Optional<User> checkIfUserExistsByEmail(String email) {
-        String sql = "select * from users where lower(email) like lower('%', lower(:email)'%')";
+        String sql = "select * from microgram.users where lower(email) like lower('%', lower(:email)'%')";
         return namedJdbcTemplate.query(sql,
                         new MapSqlParameterSource().addValue("email", email),
                         new BeanPropertyRowMapper<>(User.class))
@@ -54,7 +54,7 @@ public class UserDao {
     }
 
     public Optional<User> checkIfUserExistsByUsername(String username) {
-        String sql = "select * from users where lower(username) like lower('%', lower(:username)'%')";
+        String sql = "select * from microgram.users where lower(username) like lower('%', lower(:username)'%')";
         return namedJdbcTemplate.query(sql,
                         new MapSqlParameterSource().addValue("username", username),
                         new BeanPropertyRowMapper<>(User.class))
@@ -63,7 +63,7 @@ public class UserDao {
     }
 
     public void registerUser(String name, String username, String email, String password) {
-        String sql = "insert into users (name, username, email, password) " +
+        String sql = "insert into microgram.users (name, username, email, password) " +
                 "values (:name, :username, :email, :password)";
         namedJdbcTemplate.update(sql, new MapSqlParameterSource()
                 .addValue("name", name)

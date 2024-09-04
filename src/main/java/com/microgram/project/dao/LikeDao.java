@@ -16,12 +16,12 @@ public class LikeDao {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     public List<Like> getAllLikes() {
-        String sql = "select * from likes";
+        String sql = "select * from microgram.likes";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Like.class));
     }
     public Like checkPostForLikes(Long postId) {
-        String sql = "select * from likes as l " +
-                "left join posts as p on p.id = l.post_id " +
+        String sql = "select * from microgram.likes as l " +
+                "left join microgram.posts as p on p.id = l.post_id " +
                 "where post_id = :postId";
         return namedJdbcTemplate.query(sql,
                         new MapSqlParameterSource().addValue("postId", postId),
