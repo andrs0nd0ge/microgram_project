@@ -109,8 +109,12 @@ console.log(comment);
 
 let posts;
 
-function fetchPosts() {
-    fetch(BASE_URL + POSTS_URL + '/main')
+function fetchPosts(user) {
+    fetch(BASE_URL + POSTS_URL + '/feed', {
+        headers: {
+            'Authorization': 'Basic ' + btoa(user.email + ':' + user.password)
+        }
+    })
         .then(response => response.json())
         .then(data => {
             posts = data
@@ -122,8 +126,6 @@ function fetchPosts() {
         })
         .catch(error => console.log(error));
 }
-
-fetchPosts();
 
 function authorizeUser(user) {
     user.isAuthorised = true;
@@ -169,6 +171,88 @@ function toggleSplashScreen(splashScreen) {
         splashScreen.classList.replace('d-none', 'd-flex');
     }
 }
+
+// noinspection JSIgnoredPromiseFromCall
+checkForAuthentication();
+
+async function checkForAuthentication() {
+    const email = localStorage.getItem('email');
+    const password = localStorage.getItem('password');
+
+    const loginBtn = document.getElementById('login-btn');
+
+    const loginForm = document.getElementById('login-form');
+
+    loginForm.reset();
+
+    if (email == null) {
+        loginSplashScreen.classList.replace('d-none', 'd-flex');
+    } else {
+        loginSplashScreen.classList.replace('d-flex', 'd-none');
+
+        loginBtn.textContent = 'Sign Out';
+
+        const user = {
+            email: email,
+            password: password
+        }
+
+        fetchPosts(user);
+    }
+}
+
+async function checkAuthentication(email, password) {
+    try {
+        const response = await fetch(BASE_URL + USERS_URL + '/login', {
+            headers: {
+                'Authorization': 'Basic ' + btoa(email + ':' + password)
+            }
+        });
+
+        const statusCode = response.status;
+
+        if (statusCode === 200) {
+            const jsonResponse = await response.json();
+
+            const username = jsonResponse.username;
+
+            insertUsernameIntoNavbar(username);
+        }
+
+        return statusCode === 200;
+    } catch (error) {
+        return false;
+    }
+}
+
+function clearPostSection() {
+    const postSection = document.getElementById('postSection');
+
+    if (postSection != null) {
+        while (postSection.firstChild) {
+            postSection.removeChild(postSection.lastChild);
+        }
+    }
+}
+
+document.getElementById('login-btn').addEventListener('click', function () {
+    const email = localStorage.getItem('email');
+
+    if (email == null) {
+        loginSplashScreen.classList.replace('d-none', 'd-flex');
+    } else {
+        clearPostSection();
+
+        removeUsernameFromNavbar();
+
+        localStorage.removeItem('email');
+        localStorage.removeItem('password');
+
+        loginSplashScreen.classList.replace('d-none', 'd-flex');
+
+        this.textContent = 'Sign In';
+    }
+});
 
 function createPostElement(post) {
     const postElement = document.createElement('div');
@@ -227,7 +311,6 @@ function fetchCommentsFor(post) {
 
 function addComment(post, comment) {
     createCommentElement(post, comment);
-    // comments.push(comment);
 }
 
 function createCommentElement(post, comment) {
@@ -436,14 +519,13 @@ function createPostUploadForm() {
 
 createPostUploadForm();
 
-document.getElementById('postUploadForm').addEventListener('submit', function (event) {
-    event.preventDefault();
+document.getElementById('postUploadForm').addEventListener('submit', function (e) {
+    e.preventDefault();
     executeAddingPost();
 });
 
 function addPost(postElement) {
     createPostElement(postElement);
-    // posts.push(postElement);
 }
 
 function executeAddingPost() {
@@ -508,10 +590,10 @@ function registerUser(event) {
 
     const registrationForm = document.getElementById('registration-form');
 
-    const name = document.getElementById('nameInput').value;
-    const username = document.getElementById('usernameInput').value;
-    const email = document.getElementById('emailInput').value;
-    const password = document.getElementById('passwordInput').value;
+    const name = document.getElementById('registration-name').value;
+    const username = document.getElementById('registration-username').value;
+    const email = document.getElementById('registration-email').value;
+    const password = document.getElementById('registration-password').value;
 
     fetch(BASE_URL + USERS_URL + REGISTER_URL, {
         method: 'POST',
@@ -535,4 +617,52 @@ function registerUser(event) {
         .catch(error => {
             console.log(error);
         });
+}
+
+document.getElementById('login-form').addEventListener('submit', loginUser);
+
+async function loginUser(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('login-email').value;
+
+    const password = document.getElementById('login-password').value;
+
+    const isAuthenticated = await checkAuthentication(email, password);
+
+    if (isAuthenticated) {
+        localStorage.setItem('email', email);
+        localStorage.setItem('password', password);
+    } else {
+        alert('Authentication failed');
+    }
+
+    await checkForAuthentication();
+}
+
+function insertUsernameIntoNavbar(username) {
+    const registerBox = document.getElementById('register-box');
+
+    const usernameBox = document.createElement('ul');
+    usernameBox.classList.add('navbar-nav', 'mb-2', 'mb-lg-0');
+    usernameBox.setAttribute('id', 'username-box');
+
+    const usernameBoxLi = document.createElement('li');
+    usernameBoxLi.classList.add('navbar-item');
+    usernameBox.prepend(usernameBoxLi);
+
+    const usernameText = document.createElement('span');
+    usernameText.classList.add('text-white', 'mx-lg-2', 'mx-0');
+    usernameText.innerText = username;
+    usernameBoxLi.prepend(usernameText);
+
+    registerBox.after(usernameBox);
+}
+
+function removeUsernameFromNavbar() {
+    const usernameBox = document.getElementById('username-box');
+
+    if (usernameBox != null) {
+        usernameBox.remove();
+    }
 }

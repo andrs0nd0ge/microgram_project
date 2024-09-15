@@ -1,10 +1,12 @@
 package com.microgram.project.service;
 
 import com.microgram.project.dao.UserDao;
+import com.microgram.project.dto.LoginDto;
 import com.microgram.project.dto.RegistrationDto;
 import com.microgram.project.dto.UserDto;
 import com.microgram.project.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -70,5 +72,13 @@ public class UserService {
             }
             break;
         }
+    }
+
+    public LoginDto getUserDataForLoginBy(Authentication auth) {
+        User user = (User) auth.getPrincipal();
+
+        String email = user.getEmail();
+
+        return userDao.getUserDataForLoginBy(email);
     }
 }

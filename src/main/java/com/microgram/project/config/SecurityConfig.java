@@ -30,7 +30,8 @@ public class SecurityConfig {
                                         "/posts/comment/**",
                                         "/posts/like/**",
                                         "/posts/unlike/**",
-                                        "/subs/**")
+                                        "/subs/**",
+                                        "/users/login")
                                 .fullyAuthenticated()
                                 .anyRequest()
                                 .permitAll()

@@ -1,11 +1,13 @@
 package com.microgram.project.controller;
 
+import com.microgram.project.dto.LoginDto;
 import com.microgram.project.dto.RegistrationDto;
 import com.microgram.project.dto.UserDto;
 import com.microgram.project.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -72,5 +74,10 @@ public class UserController {
     @PostMapping("/register")
     public void registerUser(@RequestBody RegistrationDto registrationDto) {
         userService.registerUser(registrationDto);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<LoginDto> loginUser(Authentication auth) {
+        return new ResponseEntity<>(userService.getUserDataForLoginBy(auth), HttpStatus.OK);
     }
 }
